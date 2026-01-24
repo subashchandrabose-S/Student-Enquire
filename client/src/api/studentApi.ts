@@ -2,7 +2,12 @@ import axios from 'axios';
 import type { StudentSubmission } from '../types';
 import { MOCK_STUDENTS } from './mockData';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+let API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// Ensure URL starts with http/https to prevent relative path issues
+if (API_BASE_URL && !API_BASE_URL.startsWith('http')) {
+    API_BASE_URL = `https://${API_BASE_URL}`;
+}
 
 // Simple in-memory store for the session
 let localStudents = [...MOCK_STUDENTS];
