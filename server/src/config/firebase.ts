@@ -3,12 +3,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const saJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+let saJson = process.env.FIREBASE_SERVICE_ACCOUNT;
 if (!saJson) {
   throw new Error('FIREBASE_SERVICE_ACCOUNT environment variable is not set');
 }
 
 try {
+  // Defensive cleaning: Strip accidental prefixes like 'FIREBASE_SERVICE_ACCOUNT=' or quotes
+  if (saJson.includes('{')) {
+    saJson = saJson.substring(saJson.indexOf('{'), saJson.lastIndexOf('}') + 1);
+  }
+
   const serviceAccount = JSON.parse(saJson);
 
   // Fix for private key newlines in Vercel environment variables
@@ -22,7 +27,7 @@ try {
     });
   }
 } catch (error) {
-  console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT:', error);
+  console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT. Raw value starts with:', saJson.substring(0, 20));
   throw error;
 }
 
