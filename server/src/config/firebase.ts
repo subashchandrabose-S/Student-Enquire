@@ -9,14 +9,16 @@ if (!saJson) {
 }
 
 try {
-  // Defensive cleaning: Strip accidental prefixes like 'FIREBASE_SERVICE_ACCOUNT=' or quotes
-  if (saJson.includes('{')) {
-    saJson = saJson.substring(saJson.indexOf('{'), saJson.lastIndexOf('}') + 1);
+  // Extreme defensive parsing: Find the first '{' and the last '}'
+  const jsonMatch = saJson.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('No JSON object found in FIREBASE_SERVICE_ACCOUNT');
   }
 
-  const serviceAccount = JSON.parse(saJson);
+  const cleanedJson = jsonMatch[0];
+  const serviceAccount = JSON.parse(cleanedJson);
 
-  // Fix for private key newlines in Vercel environment variables
+  // Fix for private key newlines
   if (serviceAccount.private_key && typeof serviceAccount.private_key === 'string') {
     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
   }
@@ -26,8 +28,11 @@ try {
       credential: admin.credential.cert(serviceAccount)
     });
   }
-} catch (error) {
-  console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT. Raw value starts with:', saJson.substring(0, 20));
+} catch (error: any) {
+  console.error('Firebase Init Error:', error.message);
+  // Log a safe snippet of the variable to help debugging
+  const snippet = saJson.substring(0, 50).replace(/\n/g, ' ');
+  console.error(`Value starts with: "${snippet}..." (Length: ${saJson.length})`);
   throw error;
 }
 
