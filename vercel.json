@@ -2,16 +2,12 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/students/:path*",
-      "destination": "server/src/index.ts"
+      "source": "/api/(.*)",
+      "destination": "/server/src/index.ts"
     },
     {
-      "source": "/api/students",
-      "destination": "server/src/index.ts"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "client/$1"
+      "source": "/((?!api/).*)",
+      "destination": "/client/$1"
     }
   ],
   "builds": [
@@ -22,7 +18,9 @@
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": {
+        "distDir": "dist"
+      }
     }
   ]
 }
