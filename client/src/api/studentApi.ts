@@ -7,9 +7,10 @@ const getApiUrl = () => {
     const envUrl = import.meta.env.VITE_API_URL;
     if (envUrl) return envUrl;
 
-    // Relative path works perfectly if using the root vercel.json routing
+    // Use relative path or origin-based path in production
     if (window.location.hostname !== 'localhost') {
-        return '/api';
+        // This ensures the URL is always internal to your current domain
+        return `${window.location.origin}/api`;
     }
 
     return 'http://localhost:5000/api';
