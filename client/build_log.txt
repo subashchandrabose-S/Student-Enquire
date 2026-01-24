@@ -1,0 +1,8 @@
+
+> client@0.0.0 build
+> tsc -b && vite build
+
+src/api/studentApi.ts(2,10): error TS1484: 'StudentSubmission' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/StudentForm.tsx(5,10): error TS1484: 'StudentSubmission' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/StudentForm.tsx(7,25): error TS6133: 'Trash2' is declared but its value is never read.
+src/components/StudentForm.tsx(7,33): error TS6133: 'Upload' is declared but its value is never read.
