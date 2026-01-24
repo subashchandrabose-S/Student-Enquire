@@ -4,12 +4,11 @@ import { MOCK_STUDENTS } from './mockData';
 
 // Use environment variable or fallback to production URL if deployed, otherwise localhost
 const getApiUrl = () => {
-    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    const envUrl = import.meta.env.VITE_API_URL;
+    if (envUrl) return envUrl;
 
-    // Fallback logic for production if env var is missing
+    // Relative path works perfectly if using the root vercel.json routing
     if (window.location.hostname !== 'localhost') {
-        // Automatically use the current origin if deployed on the same platform
-        // or a specific production backend if you have one
         return '/api';
     }
 
@@ -17,6 +16,7 @@ const getApiUrl = () => {
 };
 
 const API_BASE_URL = getApiUrl();
+console.log('🚀 Student Enquiry API initialized at:', API_BASE_URL);
 
 // Simple in-memory store for the session fallback
 const localStudents = [...MOCK_STUDENTS];

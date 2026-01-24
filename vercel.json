@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/students/:path*",
+      "destination": "server/src/index.ts"
+    },
+    {
+      "source": "/api/students",
+      "destination": "server/src/index.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "client/$1"
+    }
+  ],
+  "builds": [
+    {
+      "src": "server/src/index.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ]
+}
