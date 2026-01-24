@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { studentApi } from '../api/studentApi';
-import { Loader2, GraduationCap, CheckCircle2, AlertCircle, Calculator, User, Phone, Calendar, ShieldCheck, BookOpen, Award } from 'lucide-react';
+import { Loader2, GraduationCap, CheckCircle2, AlertCircle, Calculator, User, Phone, ShieldCheck, BookOpen, Award } from 'lucide-react';
 
 // Zod Schema based on complex requirements
 const studentSchema = z.object({
@@ -82,7 +82,6 @@ interface StudentFormProps {
 
 export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [calculatedCutoff, setCalculatedCutoff] = useState<number | null>(null);
@@ -178,7 +177,6 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
             }
 
             await studentApi.createStudent({ student: submissionData as any });
-            setSuccess(true);
             setShowModal(true);
             reset();
             setCalculatedCutoff(null);
@@ -207,13 +205,13 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                         </div>
                         <div className="p-10 space-y-4">
                             <button
-                                onClick={() => { setShowModal(false); setSuccess(false); onGoToList(); }}
+                                onClick={() => { setShowModal(false); onGoToList(); }}
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-blue-200"
                             >
                                 View Student List
                             </button>
                             <button
-                                onClick={() => { setShowModal(false); setSuccess(false); }}
+                                onClick={() => { setShowModal(false); }}
                                 className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-4 rounded-2xl transition-all duration-300"
                             >
                                 Register Another
@@ -377,7 +375,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Percentage</label>
                                                     <input type="number" step="0.01" {...register('percentage')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="%" />
-                                                    {errors.percentage && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.percentage.message}</p>}
+                                                    {errors.percentage && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.percentage.message?.toString()}</p>}
                                                 </div>
                                             </div>
                                         )}
@@ -403,7 +401,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                                                 <div className="space-y-2 animate-in slide-in-from-top-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Percentage</label>
                                                     <input type="number" step="0.01" {...register('percentage')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="%" />
-                                                    {errors.percentage && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.percentage.message}</p>}
+                                                    {errors.percentage && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.percentage.message?.toString()}</p>}
                                                 </div>
                                             )}
                                         </div>
