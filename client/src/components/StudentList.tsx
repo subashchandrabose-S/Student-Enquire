@@ -105,12 +105,12 @@ export const StudentList: React.FC = () => {
     }
 
     return (
-        <div className="w-full max-w-7xl mx-auto p-4 md:p-8 animate-fade-in print:p-0">
+        <div className="w-full max-w-7xl mx-auto p-2 md:p-8 animate-fade-in print:p-0">
             {/* Comprehensive Edit Modal */}
             {editingStudent && (
-                <div className="fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-                    <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl my-8 overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="bg-slate-900 p-8 text-white flex justify-between items-center">
+                <div className="fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-2 md:p-4 overflow-y-auto">
+                    <div className="bg-white rounded-3xl md:rounded-[2.5rem] shadow-2xl w-full max-w-2xl my-2 md:my-8 overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="bg-slate-900 p-6 md:p-8 text-white flex justify-between items-center">
                             <div>
                                 <h3 className="font-black uppercase tracking-widest text-sm">Edit Enrollment</h3>
                                 <p className="text-slate-400 text-[10px] font-bold mt-1 uppercase tracking-widest">ID: {editingStudent.id}</p>
@@ -118,14 +118,14 @@ export const StudentList: React.FC = () => {
                             <button onClick={() => setEditingStudent(null)} className="bg-white/10 hover:bg-red-500/20 p-2 rounded-full transition-colors"><X size={20} /></button>
                         </div>
 
-                        <form onSubmit={handleUpdate} className="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                        <form onSubmit={handleUpdate} className="p-4 md:p-8 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
                             {/* Basic Info Section */}
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
                                     <Database size={18} className="text-blue-500" />
                                     <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest">Core Information</h4>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Candidate Name</label>
                                         <input
@@ -171,7 +171,7 @@ export const StudentList: React.FC = () => {
 
                                 {editingStudent.course_type === 'UG' ? (
                                     <div className="space-y-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Qualification</label>
                                                 <select
@@ -212,18 +212,18 @@ export const StudentList: React.FC = () => {
                                         </div>
 
                                         {editingStudent.result_declared && editingStudent.qualification === 'HSC' && (editingStudent.board === 'Matric' || editingStudent.board === 'CBSE') ? (
-                                            <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100/50 grid grid-cols-3 gap-4">
+                                            <div className="bg-blue-50/50 p-4 md:p-6 rounded-2xl border border-blue-100/50 grid grid-cols-3 gap-4">
                                                 <div className="space-y-2">
                                                     <label className="text-[9px] font-black text-blue-400 uppercase tracking-widest">Physics</label>
-                                                    <input type="number" value={editingStudent.physics_marks || ''} onChange={e => setEditingStudent({ ...editingStudent, physics_marks: Number(e.target.value) })} className="w-full bg-white border border-blue-100 rounded-lg px-3 py-2 font-bold text-slate-700" />
+                                                    <input type="number" value={editingStudent.physics_marks || ''} onChange={e => setEditingStudent({ ...editingStudent, physics_marks: Number(e.target.value) })} className="w-full bg-white border border-blue-100 rounded-lg px-2 md:px-3 py-2 font-bold text-slate-700" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="text-[9px] font-black text-blue-400 uppercase tracking-widest">Chemistry</label>
-                                                    <input type="number" value={editingStudent.chemistry_marks || ''} onChange={e => setEditingStudent({ ...editingStudent, chemistry_marks: Number(e.target.value) })} className="w-full bg-white border border-blue-100 rounded-lg px-3 py-2 font-bold text-slate-700" />
+                                                    <input type="number" value={editingStudent.chemistry_marks || ''} onChange={e => setEditingStudent({ ...editingStudent, chemistry_marks: Number(e.target.value) })} className="w-full bg-white border border-blue-100 rounded-lg px-2 md:px-3 py-2 font-bold text-slate-700" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="text-[9px] font-black text-blue-400 uppercase tracking-widest">Maths</label>
-                                                    <input type="number" value={editingStudent.maths_marks || ''} onChange={e => setEditingStudent({ ...editingStudent, maths_marks: Number(e.target.value) })} className="w-full bg-white border border-blue-100 rounded-lg px-3 py-2 font-bold text-slate-700" />
+                                                    <input type="number" value={editingStudent.maths_marks || ''} onChange={e => setEditingStudent({ ...editingStudent, maths_marks: Number(e.target.value) })} className="w-full bg-white border border-blue-100 rounded-lg px-2 md:px-3 py-2 font-bold text-slate-700" />
                                                 </div>
                                             </div>
                                         ) : (
@@ -235,7 +235,7 @@ export const StudentList: React.FC = () => {
                                     </div>
                                 ) : (
                                     <div className="space-y-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">UG Degree</label>
                                                 <input value={editingStudent.ug_degree || ''} onChange={e => setEditingStudent({ ...editingStudent, ug_degree: e.target.value })} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700" />
@@ -249,7 +249,7 @@ export const StudentList: React.FC = () => {
                                             </div>
                                         </div>
                                         {editingStudent.ug_status === 'Completed' && (
-                                            <div className="grid grid-cols-2 gap-6">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Percentage</label>
                                                     <input type="number" step="0.01" value={editingStudent.percentage || ''} onChange={e => setEditingStudent({ ...editingStudent, percentage: Number(e.target.value) })} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700" />
@@ -277,33 +277,82 @@ export const StudentList: React.FC = () => {
             )}
 
             {/* Header Section */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-8 print:hidden">
-                <div>
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 md:mb-12 gap-6 md:gap-8 print:hidden">
+                <div className="w-full">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
                             <Database size={20} />
                         </div>
                         <span className="text-xs font-black text-blue-600 uppercase tracking-[0.2em]">Student Portal</span>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-2">Student Directory</h2>
-                    <p className="text-slate-500 font-medium">Comprehensive database of all academic enrollments</p>
+                    <h2 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 mb-2">Student Directory</h2>
+                    <p className="text-slate-500 font-medium text-sm md:text-base">Comprehensive database of all academic enrollments</p>
                 </div>
 
                 <div className="flex flex-wrap gap-3 w-full lg:w-auto">
-                    <div className="relative flex-1 md:flex-none">
+                    <div className="relative w-full md:w-80">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search by name or reg number..."
-                            className="bg-white border border-slate-200 text-slate-700 pl-12 pr-6 py-4 rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full md:w-80 font-bold text-sm shadow-sm"
+                            placeholder="Search records..."
+                            className="bg-white border border-slate-200 text-slate-700 pl-12 pr-6 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
                         />
                     </div>
                 </div>
             </div>
 
-            {/* Table Card */}
-            <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200/50 border border-slate-100 print:shadow-none print:border-none">
+            {/* Content Display: Card view for mobile, Table for desktop */}
+            <div className="block md:hidden space-y-4">
+                {filteredStudents.map((s) => (
+                    <div key={s.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-lg">
+                                {s.name?.charAt(0)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-black text-slate-800 text-base truncate">{s.name}</h3>
+                                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{s.register_number}</div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-end border-t border-slate-50 pt-4">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase">
+                                    <GraduationCap size={14} className="text-blue-500" /> {s.course_type}
+                                </div>
+                                <div className="text-[10px] font-bold text-slate-400 truncate max-w-[150px]">
+                                    {s.qualification || s.ug_degree || 'General'}
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => handleViewStudent(s)}
+                                    className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"
+                                >
+                                    <Eye size={18} />
+                                </button>
+                                <button
+                                    onClick={() => setEditingStudent(s)}
+                                    className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"
+                                >
+                                    <Edit2 size={18} />
+                                </button>
+                                <button
+                                    onClick={() => s.id && handleDelete(s.id)}
+                                    className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200/50 border border-slate-100 print:shadow-none print:border-none">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -358,7 +407,7 @@ export const StudentList: React.FC = () => {
                                         </div>
                                     </td>
                                     <td className="p-8 print:hidden">
-                                        <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                        <div className="flex justify-end gap-3 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 md:translate-x-4 md:group-hover:translate-x-0">
                                             <button
                                                 onClick={() => handleViewStudent(s)}
                                                 className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center shadow-lg shadow-blue-500/10"

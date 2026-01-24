@@ -45,7 +45,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex font-sans print:bg-white">
+    <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row font-sans print:bg-white">
       <div className="print:hidden">
         <Sidebar
           activeTab={activeTab}
@@ -56,9 +56,9 @@ function App() {
         />
       </div>
 
-      <main className="flex-1 ml-20 md:ml-64 p-4 md:p-12 overflow-y-auto h-screen flex items-center justify-center print:ml-0 print:p-0 print:h-auto print:block">
+      <main className="flex-1 ml-0 md:ml-64 p-4 md:p-12 overflow-y-auto min-h-screen flex items-start justify-center print:ml-0 print:p-0 print:h-auto print:block pb-24 md:pb-12">
         {activeTab === 'form' ? (
-          <div className="w-full max-w-6xl print:hidden">
+          <div className="w-full max-w-6xl print:hidden animate-fade-in">
             <StudentForm onGoToList={() => setActiveTab('list')} />
           </div>
         ) : (

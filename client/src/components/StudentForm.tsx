@@ -194,7 +194,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
             {/* Success Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[3rem] shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100">
+                    <div className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100">
                         <div className="bg-slate-900 p-10 text-center text-white relative overflow-hidden">
                             <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl"></div>
                             <div className="bg-emerald-500 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/20 rotate-6">
@@ -221,7 +221,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                 </div>
             )}
 
-            <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+            <div className="bg-white rounded-2xl md:rounded-[3rem] shadow-2xl shadow-slate-200/50 overflow-hidden border border-slate-100">
                 {/* Header */}
                 <div className="bg-slate-900 px-8 py-8 text-white relative overflow-hidden">
                     <div className="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl"></div>
@@ -237,7 +237,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                     </div>
                 </div>
 
-                <div className="p-8 md:p-10">
+                <div className="p-4 md:p-10">
                     {error && (
                         <div className="mb-10 p-5 bg-red-50 border border-red-100 text-red-600 rounded-[1.5rem] flex items-center gap-4">
                             <AlertCircle size={24} />
@@ -303,7 +303,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
 
                                 {/* HSC Details */}
                                 {qualification === 'HSC' && (
-                                    <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 space-y-6">
+                                    <div className="bg-slate-50 p-4 md:p-6 rounded-2xl md:rounded-[2rem] border border-slate-100 space-y-6">
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Board of Education</label>
                                             <div className="flex flex-wrap gap-3">
@@ -384,7 +384,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
 
                                 {/* Diploma Details */}
                                 {qualification === 'Diploma' && (
-                                    <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 space-y-6 animate-in fade-in">
+                                    <div className="bg-slate-50 p-4 md:p-6 rounded-2xl md:rounded-[2rem] border border-slate-100 space-y-6 animate-in fade-in">
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Diploma Register Number</label>
                                             <input {...register('register_number')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="Enter Register No" />
@@ -418,8 +418,8 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                                     <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">UG Details</h3>
                                 </div>
 
-                                <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="bg-slate-50 p-4 md:p-6 rounded-2xl md:rounded-[2rem] border border-slate-100 space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">UG Degree</label>
                                             <input {...register('ug_degree')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="e.g. B.E. CSE" />
@@ -434,7 +434,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
 
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Status</label>
-                                        <div className="flex gap-4">
+                                        <div className="flex flex-col sm:flex-row gap-4">
                                             {['Completed', 'Pursuing'].map((s) => (
                                                 <label key={s} className={`flex-1 cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${ugStatus === s ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-white border-slate-100 text-slate-400'}`}>
                                                     <input type="radio" {...register('ug_status')} value={s} className="hidden" />

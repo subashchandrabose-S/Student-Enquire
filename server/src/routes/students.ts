@@ -10,6 +10,10 @@ router.post('/', async (req, res) => {
         console.log('Received registration request:', req.body);
         const { student, health } = req.body;
 
+        if (!student) {
+            return res.status(400).json({ success: false, error: 'Student data is missing in request body' });
+        }
+
         if (!student.register_number) {
             return res.status(400).json({ success: false, error: 'Register number is required' });
         }
@@ -36,8 +40,12 @@ router.post('/', async (req, res) => {
         console.log('Successfully saved to Firestore');
         res.status(201).json({ success: true, data: studentData });
     } catch (error: any) {
-        console.error('Error saving to Firestore:', error);
-        res.status(400).json({ success: false, error: error.message });
+        console.error('SERVER ERROR (POST /api/students):', error);
+        res.status(400).json({
+            success: false,
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
@@ -53,7 +61,12 @@ router.get('/', async (req, res) => {
 
         res.json({ success: true, data: students });
     } catch (error: any) {
-        res.status(400).json({ success: false, error: error.message });
+        console.error('SERVER ERROR (GET /api/students):', error);
+        res.status(400).json({
+            success: false,
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 

@@ -2,15 +2,24 @@ import axios from 'axios';
 import type { StudentSubmission } from '../types';
 import { MOCK_STUDENTS } from './mockData';
 
-let API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Use environment variable or fallback to production URL if deployed, otherwise localhost
+const getApiUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
 
-// Ensure URL starts with http/https to prevent relative path issues
-if (API_BASE_URL && !API_BASE_URL.startsWith('http')) {
-    API_BASE_URL = `https://student-enquireportal.vercel.app/api`;
-}
+    // Fallback logic for production if env var is missing
+    if (window.location.hostname !== 'localhost') {
+        // Automatically use the current origin if deployed on the same platform
+        // or a specific production backend if you have one
+        return '/api';
+    }
 
-// Simple in-memory store for the session
-let localStudents = [...MOCK_STUDENTS];
+    return 'http://localhost:5000/api';
+};
+
+const API_BASE_URL = getApiUrl();
+
+// Simple in-memory store for the session fallback
+const localStudents = [...MOCK_STUDENTS];
 
 export const studentApi = {
     createStudent: async (data: StudentSubmission) => {

@@ -18,7 +18,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
             <div className="print:hidden">
                 <div className="max-w-5xl mx-auto space-y-8">
                     {/* Header Card */}
-                    <div className="relative overflow-hidden bg-slate-900 rounded-[2rem] shadow-2xl p-8 md:p-12 text-white">
+                    <div className="relative overflow-hidden bg-slate-900 rounded-2xl md:rounded-[2rem] shadow-2xl p-6 md:p-12 text-white">
                         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
                         <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
 
@@ -30,9 +30,9 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                                     </div>
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">{student.name}</h1>
-                                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                                        <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider">
+                                    <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">{student.name}</h1>
+                                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
+                                        <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] md:text-xs font-bold uppercase tracking-wider">
                                             Reg: {student.register_number}
                                         </span>
                                         <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
@@ -45,18 +45,18 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={handlePrint}
-                                    className="group flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-blue-500/10 border border-white/10 hover:border-blue-500/20 text-white hover:text-blue-400 transition-all duration-300 font-bold text-sm"
+                                    className="flex-1 md:flex-none group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl md:rounded-2xl bg-white/5 hover:bg-blue-500/10 border border-white/10 hover:border-blue-500/20 text-white hover:text-blue-400 transition-all duration-300 font-bold text-xs md:text-sm"
                                 >
                                     <Eye size={18} className="group-hover:scale-110 transition-transform" />
-                                    Print Slip
+                                    Print
                                 </button>
                                 {onLogout && (
                                     <button
                                         onClick={onLogout}
-                                        className="group flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/20 text-white hover:text-red-400 transition-all duration-300 font-bold text-sm"
+                                        className="flex-1 md:flex-none group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl md:rounded-2xl bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/20 text-white hover:text-red-400 transition-all duration-300 font-bold text-xs md:text-sm"
                                     >
                                         <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
-                                        Sign Out
+                                        Logout
                                     </button>
                                 )}
                             </div>
@@ -120,7 +120,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                         <div className="lg:col-span-2 space-y-8">
                             {/* HSC / Diploma Details */}
                             {student.course_type === 'UG' && (
-                                <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                                <div className="bg-white rounded-2xl md:rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
                                     <div className="bg-blue-600 px-8 py-4 text-white flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <BookOpen size={20} />
@@ -172,7 +172,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
 
                             {/* PG Details */}
                             {student.course_type === 'PG' && (
-                                <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                                <div className="bg-white rounded-2xl md:rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
                                     <div className="bg-emerald-600 px-8 py-4 text-white flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <GraduationCap size={20} />
