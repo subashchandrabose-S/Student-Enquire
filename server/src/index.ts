@@ -11,6 +11,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Health check
+app.get('/', (req, res) => {
+  res.send('Student Enquiry Portal API is running...');
+});
+
 // Routes
 app.use('/api/students', studentRoutes);
 
