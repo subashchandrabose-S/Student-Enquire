@@ -33,7 +33,10 @@ app.get('/', (req, res) => {
 });
 
 // Routes
+// Routes
+// Mount on both paths to handle Vercel's inconsistent rewriting behavior
 app.use('/api/students', studentRoutes);
+app.use('/students', studentRoutes); // Fallback if /api is stripped by Vercel
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
