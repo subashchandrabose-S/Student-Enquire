@@ -8,9 +8,10 @@ const getApiUrl = () => {
     if (envUrl) return envUrl;
 
     // Use relative path or origin-based path in production
+    // Use relative path or origin-based path in production
     if (window.location.hostname !== 'localhost') {
-        // This ensures the URL is always internal to your current domain
-        return `${window.location.origin}/api`;
+        // PRODUCTION FIX: Hardcoded backend URL to ensure correct connection
+        return 'https://student-enquireportal.vercel.app/api';
     }
 
     return 'http://localhost:5000/api';
