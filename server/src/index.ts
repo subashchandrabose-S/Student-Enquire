@@ -27,9 +27,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check
+// Health check & Debug
 app.get('/', (req, res) => {
-  res.send('Student Enquiry Portal API is running...');
+  const firebaseConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT;
+  res.json({
+    status: 'online',
+    message: 'Student Enquiry Portal API is running',
+    firebase_configured: firebaseConfigured,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Routes
