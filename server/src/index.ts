@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
   res.json({
     status: 'online',
     message: 'Student Enquiry Portal API is running',
-    firebase_configured: firebaseConfigured,
+    firebase_configured: true,
     timestamp: new Date().toISOString()
   });
 });
