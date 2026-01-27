@@ -4,13 +4,18 @@ import { MOCK_STUDENTS } from './mockData';
 
 // Use environment variable or fallback to production URL if deployed, otherwise localhost
 const getApiUrl = () => {
-    const envUrl = import.meta.env.VITE_API_URL;
-    if (envUrl) return envUrl;
+    let envUrl = import.meta.env.VITE_API_URL;
 
-    // Use relative path or origin-based path in production
-    // Use relative path or origin-based path in production
+    // If env variable is present, ensure it has a protocol
+    if (envUrl) {
+        if (!envUrl.startsWith('http://') && !envUrl.startsWith('https://')) {
+            envUrl = `https://${envUrl}`;
+        }
+        return envUrl;
+    }
+
+    // Use hardcoded production URL if not on localhost
     if (window.location.hostname !== 'localhost') {
-        // PRODUCTION FIX: Hardcoded backend URL to ensure correct connection
         return 'https://student-enquireportal.vercel.app/api';
     }
 
