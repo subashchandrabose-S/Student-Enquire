@@ -235,7 +235,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                 <div className="border-b border-dashed border-black pb-3 mb-3 text-center font-bold text-[12px] leading-tight">
                     SONA COLLEGE OF TECHNOLOGY<br />(AUTONOMOUS)
                     {student.token_number && (
-                        <div className="mt-2 text-xl font-black border border-black inline-block px-3 py-1 bg-black text-white rounded-md">
+                        <div className="mt-4 text-4xl font-black">
                             {student.token_number}
                         </div>
                     )}
@@ -244,9 +244,14 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                 <div className="space-y-2">
                     <div className="space-y-1">
                         <div>NAME: {student.name.toUpperCase()}</div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between items-baseline">
                             <span>AGE: {student.age}</span>
-                            <span>{student.course_type === 'PG' ? 'M.E' : 'B.E'}</span>
+                            <span className="text-[10px] font-black">
+                                {student.course_type === 'PG'
+                                    ? `M.E ${student.ug_degree ? `/ ${student.ug_degree.split(' ').pop()?.toUpperCase()}` : ''}`
+                                    : 'B.E'
+                                }
+                            </span>
                         </div>
                     </div>
 
