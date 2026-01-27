@@ -235,17 +235,19 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                 <div className="border-b border-dashed border-black pb-3 mb-3 text-center font-bold text-[12px] leading-tight">
                     SONA COLLEGE OF TECHNOLOGY<br />(AUTONOMOUS)
                     {student.token_number && (
-                        <div className="mt-2 text-sm border border-black inline-block px-2 py-0.5">
-                            TOKEN: {student.token_number}
+                        <div className="mt-2 text-xl font-black border border-black inline-block px-3 py-1 bg-black text-white rounded-md">
+                            {student.token_number}
                         </div>
                     )}
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                     <div className="space-y-1">
                         <div>NAME: {student.name.toUpperCase()}</div>
-                        <div>AGE: {student.age}</div>
-                        <div>DATE: {new Date().toLocaleDateString()}</div>
+                        <div className="flex justify-between">
+                            <span>AGE: {student.age}</span>
+                            <span>{student.course_type === 'PG' ? 'M.E' : 'B.E'}</span>
+                        </div>
                     </div>
 
                     <div className="space-y-1 pt-1 border-t border-slate-100">
@@ -266,13 +268,10 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
 
                     <div className="pt-1 border-t border-slate-100">
                         <div>CONTACT: {student.contact_no}</div>
+                        <div className="text-[10px] pt-1">DATE: {new Date().toLocaleDateString()}</div>
                     </div>
 
-                    <div className="pt-2 border-t border-dashed border-black text-center font-bold">
-                        VISIT: {student.visit_count || 1}
-                    </div>
-
-                    <div className="text-[10px] text-center font-bold pt-1">
+                    <div className="text-[10px] text-center font-bold pt-1 border-t border-dashed border-black mt-2">
                         REG NO: {student.register_number}
                     </div>
                 </div>
