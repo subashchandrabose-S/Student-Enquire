@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 // Enhanced CORS configuration for Vercel deployment
 app.use(cors({
-  origin: '*', // Allow all origins (restrict in production if needed)
+  origin: ['http://localhost:5173', 'https://studentenquiresct.vercel.app/'], // Allow all origins (restrict in production if needed)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
