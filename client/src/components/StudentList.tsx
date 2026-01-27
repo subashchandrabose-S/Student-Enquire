@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { studentApi } from '../api/studentApi';
-import { Search, Trash2, GraduationCap, Phone, Printer, Database, X, Edit2, Check, Loader2, Eye } from 'lucide-react';
+import { Search, Trash2, GraduationCap, Phone, Printer, Database, X, Edit2, Check, Loader2, Eye, Download, FileText, FileSpreadsheet } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { StudentView } from './StudentView';
 import type { Student } from '../types';
 
@@ -11,6 +13,7 @@ export const StudentList: React.FC = () => {
     const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [showExportMenu, setShowExportMenu] = useState(false);
 
     useEffect(() => {
         loadStudents();
@@ -68,6 +71,85 @@ export const StudentList: React.FC = () => {
             console.error('Failed to fetch student details', error);
             setSelectedStudent(student);
         }
+    };
+
+    const downloadCSV = (type: 'UG' | 'PG') => {
+        const data = students.filter(s => s.course_type === type);
+        if (data.length === 0) {
+            alert(`No ${type} students found to export.`);
+            return;
+        }
+
+        const headers = [
+            'Name', 'Register Number', 'Contact', 'DOB',
+            type === 'UG' ? 'Qualification' : 'Degree',
+            type === 'UG' ? 'Board' : 'Status',
+            type === 'UG' ? 'Cutoff/Percentage' : 'CGPA/Percentage',
+            'Token'
+        ];
+
+        const csvContent = [
+            headers.join(','),
+            ...data.map(s => {
+                const row = [
+                    `"${s.name}"`,
+                    `"${s.register_number}"`,
+                    `"${s.contact_no}"`,
+                    `"${s.dob || ''}"`,
+                    type === 'UG' ? `"${s.qualification || ''}"` : `"${s.ug_degree || ''}"`,
+                    type === 'UG' ? `"${s.board || ''}"` : `"${s.ug_status || ''}"`,
+                    type === 'UG' ? `"${s.cutoff || s.percentage || ''}"` : `"${s.cgpa || s.percentage || ''}"`,
+                    `"${s.token_number || ''}"`
+                ];
+                return row.join(',');
+            })
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${type}_Students_List_${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+        setShowExportMenu(false);
+    };
+
+    const downloadPDF = (type: 'UG' | 'PG') => {
+        const data = students.filter(s => s.course_type === type);
+        if (data.length === 0) {
+            alert(`No ${type} students found to export.`);
+            return;
+        }
+
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text(`${type} Students Archive`, 14, 15);
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
+
+        const tableColumn = ["Name", "Reg. No", "Contact", type === 'UG' ? "Qual." : "Degree", "Stats", "Token"];
+        const tableRows = data.map(s => [
+            s.name || '',
+            s.register_number || '',
+            s.contact_no || '',
+            type === 'UG' ? (s.qualification || '-') : (s.ug_degree || '-'),
+            type === 'UG' ? (s.cutoff ? `Cutoff: ${s.cutoff.toFixed(2)}` : `${s.percentage || '-'}%`) : (s.cgpa ? `CGPA: ${s.cgpa}` : `${s.percentage || '-'}%`),
+            s.token_number || '-'
+        ]);
+
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 25,
+            theme: 'grid',
+            headStyles: { fillColor: [37, 99, 235] }, // Blue-600
+            styles: { fontSize: 8, cellPadding: 3 },
+            alternateRowStyles: { fillColor: [248, 250, 252] } // Slate-50
+        });
+
+        doc.save(`${type}_Students_List.pdf`);
+        setShowExportMenu(false);
     };
 
     const filteredStudents = students.filter(s =>
@@ -289,7 +371,48 @@ export const StudentList: React.FC = () => {
                     <p className="text-slate-500 font-medium text-sm md:text-base">Comprehensive database of all academic enrollments</p>
                 </div>
 
-                <div className="flex flex-wrap gap-3 w-full lg:w-auto">
+                <div className="flex flex-wrap gap-3 w-full lg:w-auto relative">
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowExportMenu(!showExportMenu)}
+                            className="bg-slate-900 hover:bg-slate-800 text-white pl-5 pr-6 py-4 rounded-2xl md:rounded-[1.5rem] font-bold text-sm shadow-xl shadow-slate-200 transition-all flex items-center gap-3 active:scale-95"
+                        >
+                            <Download size={18} />
+                            <span>Export Data</span>
+                        </button>
+
+                        {showExportMenu && (
+                            <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-50 animate-in zoom-in-95 duration-200 origin-top-right">
+                                <div className="p-2">
+                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 mb-2">UG Records</div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <button onClick={() => downloadCSV('UG')} className="flex items-center justify-center gap-2 p-3 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 transition-colors border border-slate-100 hover:border-emerald-200">
+                                            <FileSpreadsheet size={16} />
+                                            <span className="text-xs font-bold">CSV</span>
+                                        </button>
+                                        <button onClick={() => downloadPDF('UG')} className="flex items-center justify-center gap-2 p-3 rounded-xl hover:bg-red-50 text-slate-600 hover:text-red-500 transition-colors border border-slate-100 hover:border-red-200">
+                                            <FileText size={16} />
+                                            <span className="text-xs font-bold">PDF</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="h-px bg-slate-100 my-1"></div>
+                                <div className="p-2">
+                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 mb-2">PG Records</div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <button onClick={() => downloadCSV('PG')} className="flex items-center justify-center gap-2 p-3 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 transition-colors border border-slate-100 hover:border-emerald-200">
+                                            <FileSpreadsheet size={16} />
+                                            <span className="text-xs font-bold">CSV</span>
+                                        </button>
+                                        <button onClick={() => downloadPDF('PG')} className="flex items-center justify-center gap-2 p-3 rounded-xl hover:bg-red-50 text-slate-600 hover:text-red-500 transition-colors border border-slate-100 hover:border-red-200">
+                                            <FileText size={16} />
+                                            <span className="text-xs font-bold">PDF</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     <div className="relative w-full md:w-80">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input
