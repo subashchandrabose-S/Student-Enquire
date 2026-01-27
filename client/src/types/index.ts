@@ -34,6 +34,8 @@ export interface Student {
     visit_count?: number;
 
     created_at?: string;
+    token_number?: number;
+    token_date?: string;
 }
 
 export interface StudentSubmission {

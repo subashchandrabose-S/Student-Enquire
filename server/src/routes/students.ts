@@ -27,15 +27,59 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ success: false, error: 'Student with this Register Number already exists' });
         }
 
+        // Calculate Age from DOB if present
+        let age: number | null = null;
+        if (student.dob) {
+            const today = new Date();
+            const birthDate = new Date(student.dob);
+            age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+        }
+
+        // Generate Daily Token (Transaction)
+        const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const counterRef = db.collection('daily_counters').doc(todayStr);
+
+        let newToken = 101; // Default start
+
+        try {
+            newToken = await db.runTransaction(async (t) => {
+                const doc = await t.get(counterRef);
+                let nextToken = 101;
+
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data && data.last_token) {
+                        nextToken = data.last_token + 1;
+                    }
+                }
+
+                t.set(counterRef, { last_token: nextToken, date: todayStr });
+                return nextToken;
+            });
+        } catch (txError) {
+            console.error('Transaction failure for token generation:', txError);
+            // Fallback: just use random or handle error? 
+            // For now, let's allow it to fail but log it, or maybe just proceed with a fallback if critical?
+            // But duplicate tokens are bad. Let's propagate error.
+            throw new Error('Failed to generate token. Please try again.');
+        }
+
         const studentRef = db.collection(STUDENTS_COLLECTION).doc();
         const studentData = {
             ...student,
             id: studentRef.id,
             created_at: new Date().toISOString(),
-            health: health || null
+            health: health || null,
+            age: age,
+            token_number: newToken,
+            token_date: todayStr
         };
 
-        console.log('Saving to Firestore with ID:', studentRef.id);
+        console.log(`Saving student ${student.name} with Token: ${newToken}`);
         await studentRef.set(studentData);
         console.log('Successfully saved to Firestore');
         res.status(201).json({ success: true, data: studentData });

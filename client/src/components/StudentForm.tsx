@@ -11,14 +11,14 @@ const studentSchema = z.object({
     course_type: z.enum(['UG', 'PG']),
     register_number: z.string().min(1, 'Register Number is required'),
     contact_no: z.string().regex(/^\+?[\d\s-]{10,}$/, 'Invalid contact number'),
-    age: z.string().min(1, 'Age is required'),
+    // Age is calculated from DOB
+    dob: z.string().min(1, 'Date of Birth is required'), // Made required
 
     // UG - HSC/Diploma
     qualification: z.enum(['HSC', 'Diploma']).nullable().optional().or(z.literal('')),
 
     // HSC Details
     board: z.enum(['Matric', 'CBSE', 'Other']).nullable().optional().or(z.literal('')),
-    dob: z.string().optional(),
     result_declared: z.boolean().optional(),
     physics_marks: z.string().optional(), // Using string for input, converting later
     chemistry_marks: z.string().optional(),
@@ -134,12 +134,14 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
         setError(null);
         try {
             // Clean up data based on course type
+            // Clean up data based on course type
             const baseData = {
                 name: data.name,
-                age: Number(data.age),
+                // age is now calculated on backend
                 course_type: data.course_type,
                 register_number: data.register_number,
                 contact_no: data.contact_no,
+                dob: data.dob,
                 update_count: 1,
             };
 
@@ -258,11 +260,6 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Candidate Name</label>
                                     <input {...register('name')} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none" placeholder="Enter full name" />
                                     {errors.name && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.name.message}</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Age</label>
-                                    <input type="number" {...register('age')} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none" placeholder="Age" />
-                                    {errors.age && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.age.message}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Date of Birth</label>

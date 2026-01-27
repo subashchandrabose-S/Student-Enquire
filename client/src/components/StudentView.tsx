@@ -35,6 +35,11 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                                         <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] md:text-xs font-bold uppercase tracking-wider">
                                             Reg: {student.register_number}
                                         </span>
+                                        {student.token_number && (
+                                            <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                                                Token: {student.token_number}
+                                            </span>
+                                        )}
                                         <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
                                             {student.course_type} Candidate
                                         </span>
@@ -229,6 +234,11 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
 
                 <div className="border-b border-dashed border-black pb-3 mb-3 text-center font-bold text-[12px] leading-tight">
                     SONA COLLEGE OF TECHNOLOGY<br />(AUTONOMOUS)
+                    {student.token_number && (
+                        <div className="mt-2 text-sm border border-black inline-block px-2 py-0.5">
+                            TOKEN: {student.token_number}
+                        </div>
+                    )}
                 </div>
 
                 <div className="space-y-3">
