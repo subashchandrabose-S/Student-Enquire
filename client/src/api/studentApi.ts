@@ -23,7 +23,7 @@ const getApiUrl = () => {
 };
 
 const API_BASE_URL = getApiUrl();
-console.log('🚀 Student Enquiry API initialized at:', API_BASE_URL);
+
 
 // Simple in-memory store for the session fallback
 const localStudents = [...MOCK_STUDENTS];
