@@ -13,7 +13,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
     };
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 animate-fade-in">
+        <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 animate-fade-in print:min-h-0 print:h-auto print:p-0 print:m-0 print:bg-white">
             {/* Screen View (Hidden on Print) */}
             <div className="print:hidden">
                 <div className="max-w-5xl mx-auto space-y-8">
@@ -212,7 +212,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
             </div>
 
             {/* Thermal Print View (48mm) */}
-            <div className="hidden print:block bg-white text-black font-mono text-[11px] leading-snug w-[48mm] max-w-[48mm] mx-auto p-0 pb-12">
+            <div className="hidden print:block bg-white text-black font-mono text-[11px] leading-snug w-[48mm] max-w-[48mm] mx-auto p-0 pb-4">
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     @page {
@@ -224,18 +224,18 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                             margin: 0;
                             padding: 0;
                             width: 58mm;
+                            min-height: 0 !important;
                         }
-                        html, body {
-                            height: auto;
-                            overflow: visible;
+                        html {
+                            min-height: 0 !important;
                         }
                     }
                 ` }} />
 
-                <div className="border-b border-dashed border-black pb-3 mb-3 text-center font-bold text-[12px] leading-tight">
+                <div className="border-b border-dashed border-black pb-3 mb-3 text-center font-bold text-[10px] leading-tight">
                     SONA COLLEGE OF TECHNOLOGY<br />(AUTONOMOUS)
                     {student.token_number && (
-                        <div className="mt-4 text-4xl font-black">
+                        <div className="mt-1 text-1xl font-black">
                             {student.token_number}
                         </div>
                     )}
@@ -248,8 +248,8 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                             <span>AGE: {student.age}</span>
                             <span className="text-[10px] font-black">
                                 {student.course_type === 'PG'
-                                    ? `M.E ${student.ug_degree ? `/ ${student.ug_degree.split(' ').pop()?.toUpperCase()}` : ''}`
-                                    : 'B.E'
+                                    ? `B.E ${student.ug_degree ? `/ ${student.ug_degree.split(' ').pop()?.toUpperCase()}` : ''}`
+                                    : ''
                                 }
                             </span>
                         </div>
@@ -280,8 +280,8 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                         REG NO: {student.register_number}
                     </div>
                 </div>
-                {/* Extra spacing at the bottom for tearing */}
-                <div className="h-12"></div>
+                {/* Minimal spacing for tear-off */}
+                <div className="h-4"></div>
             </div>
         </div>
     );
