@@ -211,22 +211,26 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                 </div>
             </div>
 
-            {/* Thermal Print View (58mm) */}
-            <div className="hidden print:block bg-white text-black font-mono text-[11px] leading-snug w-full max-w-[58mm] mx-auto p-1 pb-4">
+            {/* Thermal Print View (58mm) - Strictly Enforced */}
+            <div className="hidden print:block bg-white text-black font-mono text-[12px] leading-snug w-[58mm] min-w-[58mm] max-w-[58mm] p-2 pb-4 mx-0">
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     @page {
-                        size: auto;
-                        margin: 0;
+                        size: 58mm auto; /* Strictly hint 58mm width */
+                        margin: 0mm;
                     }
                     @media print {
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            width: 100% !important;
+                        html, body {
+                            width: 58mm !important;
+                            min-width: 58mm !important;
+                            max-width: 58mm !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            overflow: hidden !important;
                         }
-                        html {
-                            width: 100% !important;
+                        /* Hide all other elements to prevent blank pages */
+                        body > *:not(.print\:block) {
+                            display: none !important;
                         }
                     }
                 ` }} />

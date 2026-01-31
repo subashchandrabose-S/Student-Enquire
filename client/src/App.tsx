@@ -22,7 +22,10 @@ function App() {
   }, []);
 
   const handleLogin = async (username: string, password: string) => {
-    if (username === 'admin' && password === 'admin123') {
+    const adminUser = import.meta.env.VITE_ADMIN_USERNAME;
+    const adminPass = import.meta.env.VITE_ADMIN_PASSWORD;
+
+    if (username === adminUser && password === adminPass) {
       setIsAuthenticated(true);
       localStorage.setItem('auth', JSON.stringify({ userType: 'admin' }));
     } else {

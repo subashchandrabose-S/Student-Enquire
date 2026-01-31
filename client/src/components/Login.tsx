@@ -32,7 +32,10 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         setError(null);
 
         try {
-            if (data.username === 'admin' && data.password === 'admin123') {
+            const adminUser = import.meta.env.VITE_ADMIN_USERNAME;
+            const adminPass = import.meta.env.VITE_ADMIN_PASSWORD;
+
+            if (data.username === adminUser && data.password === adminPass) {
                 onLogin(data.username, data.password);
             } else {
                 setError('Invalid admin credentials');
@@ -77,7 +80,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                                 <input
                                     {...register('username')}
                                     className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 outline-none transition-all text-sm font-bold text-slate-700 placeholder-slate-300"
-                                    placeholder="admin"
+                                    placeholder="admin@sct.com"
                                 />
                             </div>
                             {errors.username && (
