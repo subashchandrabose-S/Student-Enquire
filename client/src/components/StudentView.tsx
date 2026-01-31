@@ -211,23 +211,22 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                 </div>
             </div>
 
-            {/* Thermal Print View (48mm) */}
-            <div className="hidden print:block bg-white text-black font-mono text-[11px] leading-snug w-[48mm] max-w-[48mm] mx-auto p-0 pb-4">
+            {/* Thermal Print View (58mm) */}
+            <div className="hidden print:block bg-white text-black font-mono text-[11px] leading-snug w-full max-w-[58mm] mx-auto p-1 pb-4">
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     @page {
-                        size: 58mm auto;
+                        size: auto;
                         margin: 0;
                     }
                     @media print {
                         body {
                             margin: 0;
                             padding: 0;
-                            width: 58mm;
-                            min-height: 0 !important;
+                            width: 100% !important;
                         }
                         html {
-                            min-height: 0 !important;
+                            width: 100% !important;
                         }
                     }
                 ` }} />
@@ -235,7 +234,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                 <div className="border-b border-dashed border-black pb-3 mb-3 text-center font-bold text-[10px] leading-tight">
                     SONA COLLEGE OF TECHNOLOGY<br />(AUTONOMOUS)
                     {student.token_number && (
-                        <div className="mt-1 text-1xl font-black">
+                        <div className="mt-1 text-2xl font-black">
                             {student.token_number}
                         </div>
                     )}
