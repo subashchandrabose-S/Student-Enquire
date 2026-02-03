@@ -136,6 +136,91 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// GET /api/students/:id/print - Generate JSON for Bluetooth Print App
+router.get('/:id/print', async (req, res) => {
+    try {
+        const studentRef = db.collection(STUDENTS_COLLECTION).doc(req.params.id);
+        const doc = await studentRef.get();
+
+        if (!doc.exists) {
+            return res.status(404).send('Student not found');
+        }
+
+        const s = doc.data();
+        const date = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+        // Construct formatting based on Bluetooth Print App documentation
+        const printData: any[] = [];
+
+        // Helper to add text
+        const addText = (content: string, bold = 0, align = 0, format = 0) => {
+            printData.push({
+                type: 0, // text
+                content: content,
+                bold: bold, // 0 or 1
+                align: align, // 0:left, 1:center, 2:right
+                format: format // 0:normal, 1:double height, 2:double h+w, 3:double w, 4:small
+            });
+        };
+
+        // Helper to add details
+        const addDetail = (label: string, value: any) => {
+            if (value) {
+                addText(`${label}: ${value}`, 0, 0, 0);
+            }
+        };
+
+        // Header
+        addText('SONA COLLEGE OF TECHNOLOGY', 1, 1, 0);
+        addText('(AUTONOMOUS)', 0, 1, 4); // small
+        addText('--------------------------------', 0, 1, 0);
+
+        // Token
+        if (s?.token_number) {
+            addText('TOKEN NO', 1, 1, 0);
+            addText(`${s.token_number}`, 1, 1, 2); // Double Height + Width
+        }
+
+        addText(' ', 0, 0, 0); // Spacer
+
+        // Student Details
+        addDetail('NAME', s?.name?.toUpperCase());
+        addDetail('REG NO', s?.register_number);
+        addDetail('DOB', s?.dob);
+        addDetail('CONTACT', s?.contact_no);
+        addText(' ', 0, 0, 0);
+
+        addDetail('COURSE', s?.course_type);
+        if (s?.course_type === 'UG') {
+            addDetail('QUAL', s?.qualification);
+            if (s?.cutoff) addDetail('CUTOFF', s?.cutoff.toFixed(2));
+            if (s?.percentage) addDetail('PERCENT', s?.percentage + '%');
+        } else {
+            addDetail('UG DEG', s?.ug_degree);
+            if (s?.cgpa) addDetail('CGPA', s?.cgpa);
+        }
+
+        addText('--------------------------------', 0, 1, 0);
+        addText(`DATE: ${date}`, 0, 2, 0); // Right align date
+        addText(' ', 0, 0, 0);
+        addText(' ', 0, 0, 0); // Extra space for tear-off
+
+        // The app expects an object with numeric keys "0", "1", ... if array_push was used in PHP with JSON_FORCE_OBJECT
+        // However, standard JSON array usually works. The example used `json_encode($a, JSON_FORCE_OBJECT)`.
+        // If the app strictly requires object with index keys:
+        const responseObj: any = {};
+        printData.forEach((item, index) => {
+            responseObj[index] = item;
+        });
+
+        res.json(responseObj);
+
+    } catch (error: any) {
+        console.error('Print generation error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // DELETE /api/students/:id
 router.delete('/:id', async (req, res) => {
     try {

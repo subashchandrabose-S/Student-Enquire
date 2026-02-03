@@ -14,15 +14,16 @@ const getApiUrl = () => {
         return envUrl;
     }
 
-    // Use relative path for production (works on ANY Vercel domain)
-    if (window.location.hostname !== 'localhost') {
-        return '/api';
+    // Development mode: Assume backend is on port 5000, either localhost or local IP
+    if (import.meta.env.MODE === 'development') {
+        return `http://${window.location.hostname}:5000/api`;
     }
 
-    return 'http://localhost:5000/api';
+    // Production: Use relative path (handled by Vercel/proxy)
+    return '/api';
 };
 
-const API_BASE_URL = getApiUrl();
+export const API_BASE_URL = getApiUrl();
 
 
 // Simple in-memory store for the session fallback

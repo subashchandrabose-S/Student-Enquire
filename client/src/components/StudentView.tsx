@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Student } from '../types';
-import { User, Phone, Calendar, BookOpen, LogOut, GraduationCap, Calculator, Eye } from 'lucide-react';
+import { API_BASE_URL } from '../api/studentApi';
+import { User, Phone, Calendar, BookOpen, LogOut, GraduationCap, Calculator, Eye, Smartphone } from 'lucide-react';
 
 interface StudentViewProps {
     student: Student;
@@ -10,6 +11,33 @@ interface StudentViewProps {
 export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) => {
     const handlePrint = () => {
         window.print();
+    };
+
+    const handleAppPrint = () => {
+        // Construct the full URL for the backend endpoint
+        let fullApiUrl = API_BASE_URL;
+        if (fullApiUrl.startsWith('/')) {
+            fullApiUrl = `${window.location.origin}${fullApiUrl}`;
+        }
+
+        // If on localhost but accessing via IP (e.g. mobile testing), we need to ensure 
+        // the backend URL also uses the IP, not localhost, if possible.
+        // However, standard dev setup usually has frontend on 5173 and backend on 5000.
+        // If user is on mobile accessing http://192.168.1.5:5173, 'localhost' in API_URL won't work.
+        // But let's assume for now they are either in Prod OR they know to configure VITE_API_URL.
+
+        // Fallback for simple dev setup where API_BASE_URL might be localhost
+        // If window location is an IP, try to replace localhost in API URL with that IP
+        const isIp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(window.location.hostname);
+        if (isIp && fullApiUrl.includes('localhost')) {
+            fullApiUrl = fullApiUrl.replace('localhost', window.location.hostname);
+        }
+
+        const responseUrl = `${fullApiUrl}/students/${student.id}/print`;
+        const schemeUrl = `my.bluetoothprint.scheme://${responseUrl}`;
+
+        console.log('Launching Bluetooth Print Scheme:', schemeUrl);
+        window.location.href = schemeUrl;
     };
 
     return (
@@ -49,11 +77,19 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
 
                             <div className="flex items-center gap-3">
                                 <button
+                                    onClick={handleAppPrint}
+                                    className="flex-1 md:flex-none group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl md:rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/30 text-emerald-400 hover:text-emerald-300 transition-all duration-300 font-bold text-xs md:text-sm"
+                                    title="Open format in Bluetooth Print App"
+                                >
+                                    <Smartphone size={18} className="group-hover:scale-110 transition-transform" />
+                                    App Print
+                                </button>
+                                <button
                                     onClick={handlePrint}
                                     className="flex-1 md:flex-none group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl md:rounded-2xl bg-white/5 hover:bg-blue-500/10 border border-white/10 hover:border-blue-500/20 text-white hover:text-blue-400 transition-all duration-300 font-bold text-xs md:text-sm"
                                 >
                                     <Eye size={18} className="group-hover:scale-110 transition-transform" />
-                                    Print
+                                    Web Print
                                 </button>
                                 {onLogout && (
                                     <button
