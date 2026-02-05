@@ -316,7 +316,8 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                     </div>
 
                     <div className="text-[10px] text-center font-bold pt-1 border-t border-dashed border-black mt-2">
-                        REG NO: {student.register_number}
+                        <div>REG NO: {student.register_number}</div>
+                        <div>VISIT NO: {student.visit_count || 0}</div>
                     </div>
                 </div>
                 {/* Minimal spacing for tear-off */}

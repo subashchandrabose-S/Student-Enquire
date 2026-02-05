@@ -186,6 +186,7 @@ router.get('/:id/print', async (req, res) => {
         // Student Details
         addDetail('NAME', s?.name?.toUpperCase());
         addDetail('REG NO', s?.register_number);
+        addDetail('VISIT NO', s?.visit_count || 0);
         addDetail('DOB', s?.dob);
         addDetail('CONTACT', s?.contact_no);
         addText(' ', 0, 0, 0);
