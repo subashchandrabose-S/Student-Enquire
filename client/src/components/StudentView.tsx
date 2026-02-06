@@ -9,6 +9,9 @@ interface StudentViewProps {
 }
 
 export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) => {
+    // Debug: Log visit count
+    console.log('StudentView - visit_count:', student.visit_count, 'Full student:', student);
+
     const handlePrint = () => {
         window.print();
     };
@@ -315,9 +318,9 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                         <div className="text-[10px] pt-1">DATE: {new Date().toLocaleDateString()}</div>
                     </div>
 
-                    <div className="text-[10px] text-center font-bold pt-1 border-t border-dashed border-black mt-2">
-                        <div>REG NO: {student.register_number}</div>
-                        <div>VISIT NO: {student.visit_count || 0}</div>
+                    <div className="text-center font-bold pt-2 border-t border-dashed border-black mt-2 space-y-1">
+                        <div className="text-[10px]">REG NO: {student.register_number}</div>
+                        <div className="text-[11px]">VISIT NO: {typeof student.visit_count === 'number' ? student.visit_count : 0}</div>
                     </div>
                 </div>
                 {/* Minimal spacing for tear-off */}
