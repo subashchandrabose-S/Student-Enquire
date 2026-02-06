@@ -172,37 +172,37 @@ router.get('/:id/print', async (req, res) => {
 
         // Header
         addText('SONA COLLEGE OF TECHNOLOGY', 1, 1, 0);
-        addText('(AUTONOMOUS)', 0, 1, 4); // small
-        addText('--------------------------------', 0, 1, 0);
-
-        // Token
+        addText('(AUTONOMOUS)', 0, 1, 4);
         if (s?.token_number) {
-            addText('TOKEN NO', 1, 1, 0);
             addText(`${s.token_number}`, 1, 1, 2); // Double Height + Width
         }
+        addText('--------------------------------', 0, 1, 0);
 
-        addText(' ', 0, 0, 0); // Spacer
-
-        // Student Details
-        addDetail('NAME', s?.name?.toUpperCase());
-        addDetail('REG NO', s?.register_number);
-        addDetail('VISIT NO', s?.visit_count || 0);
-        addDetail('DOB', s?.dob);
-        addDetail('CONTACT', s?.contact_no);
+        // Name and Age
+        addText(`NAME: ${s?.name?.toUpperCase()}`, 0, 0, 0);
+        addText(`AGE: ${s?.age || '-'}`, 0, 0, 0);
         addText(' ', 0, 0, 0);
 
-        addDetail('COURSE', s?.course_type);
+        // Academic details
         if (s?.course_type === 'UG') {
-            addDetail('QUAL', s?.qualification);
-            if (s?.cutoff) addDetail('CUTOFF', s?.cutoff.toFixed(2));
-            if (s?.percentage) addDetail('PERCENT', s?.percentage + '%');
+            addText(`${(s?.board || s?.qualification || '').toUpperCase()}`, 0, 0, 0);
+            if (s?.cutoff) addText(`CUTOFF: ${s?.cutoff.toFixed(2)}`, 0, 0, 0);
+            if (s?.percentage) addText(`PERC: ${s?.percentage}%`, 0, 0, 0);
         } else {
-            addDetail('UG DEG', s?.ug_degree);
-            if (s?.cgpa) addDetail('CGPA', s?.cgpa);
+            addText(`${(s?.ug_degree || '').toUpperCase()}`, 0, 0, 0);
+            if (s?.cgpa) addText(`CGPA: ${s?.cgpa}`, 0, 0, 0);
+            if (s?.percentage) addText(`PERC: ${s?.percentage}%`, 0, 0, 0);
         }
 
         addText('--------------------------------', 0, 1, 0);
-        addText(`DATE: ${date}`, 0, 2, 0); // Right align date
+        addText(`CONTACT: ${s?.contact_no}`, 0, 0, 0);
+        addText(`DATE: ${new Date().toLocaleDateString()}`, 0, 0, 0);
+
+        // Footer (Centered)
+        addText('--------------------------------', 0, 1, 0);
+        addText(`REG NO: ${s?.register_number}`, 1, 1, 0);
+        addText(`VISIT NO: ${s?.visit_count || 0}`, 1, 1, 0);
+
         addText(' ', 0, 0, 0);
         addText(' ', 0, 0, 0); // Extra space for tear-off
 
