@@ -277,13 +277,13 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                 <div className="border-b border-dashed border-black pb-3 mb-3 text-center font-bold text-[10px] leading-tight">
                     SONA COLLEGE OF TECHNOLOGY<br />(AUTONOMOUS)
                     {student.token_number && (
-                        <div className="mt-1 text-2xl font-black">
+                        <div className="mt-1 text-xl font-black">
                             {student.token_number}
                         </div>
                     )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1">
                     <div className="space-y-1">
                         <div>NAME: {student.name.toUpperCase()}</div>
                         <div className="flex justify-between items-baseline">

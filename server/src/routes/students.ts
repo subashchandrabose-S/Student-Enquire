@@ -174,14 +174,13 @@ router.get('/:id/print', async (req, res) => {
         addText('SONA COLLEGE OF TECHNOLOGY', 1, 1, 0);
         addText('(AUTONOMOUS)', 0, 1, 4);
         if (s?.token_number) {
-            addText(`${s.token_number}`, 1, 1, 2); // Double Height + Width
+            addText(`${s.token_number}`, 1, 1, 1); // Double Height instead of Height+Width
         }
         addText('--------------------------------', 0, 1, 0);
 
         // Name and Age
         addText(`NAME: ${s?.name?.toUpperCase()}`, 0, 0, 0);
         addText(`AGE: ${s?.age || '-'}`, 0, 0, 0);
-        addText(' ', 0, 0, 0);
 
         // Academic details
         if (s?.course_type === 'UG') {
