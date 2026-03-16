@@ -14,6 +14,8 @@ export const StudentList: React.FC = () => {
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
     const [showExportMenu, setShowExportMenu] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
         loadStudents();
@@ -73,10 +75,31 @@ export const StudentList: React.FC = () => {
         }
     };
 
+    const filterByDateRange = (s: Student) => {
+        if (!startDate && !endDate) return true;
+        const studentDateStr = s.token_date || (s.created_at ? s.created_at.split('T')[0] : null);
+        if (!studentDateStr) return false; // Exclude if no date available when filter is active
+        
+        const studentDate = new Date(studentDateStr);
+        studentDate.setHours(0,0,0,0);
+        
+        if (startDate) {
+            const startD = new Date(startDate);
+            startD.setHours(0,0,0,0);
+            if (studentDate < startD) return false;
+        }
+        if (endDate) {
+            const endD = new Date(endDate);
+            endD.setHours(0,0,0,0);
+            if (studentDate > endD) return false;
+        }
+        return true;
+    };
+
     const downloadCSV = (type: 'UG' | 'PG') => {
-        const data = students.filter(s => s.course_type === type);
+        const data = students.filter(s => s.course_type === type && filterByDateRange(s));
         if (data.length === 0) {
-            alert(`No ${type} students found to export.`);
+            alert(`No ${type} students found in the selected date range.`);
             return;
         }
 
@@ -114,9 +137,9 @@ export const StudentList: React.FC = () => {
     };
 
     const downloadPDF = (type: 'UG' | 'PG') => {
-        const data = students.filter(s => s.course_type === type);
+        const data = students.filter(s => s.course_type === type && filterByDateRange(s));
         if (data.length === 0) {
-            alert(`No ${type} students found to export.`);
+            alert(`No ${type} students found in the selected date range.`);
             return;
         }
 
@@ -382,7 +405,36 @@ export const StudentList: React.FC = () => {
                         </button>
 
                         {showExportMenu && (
-                            <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-50 animate-in zoom-in-95 duration-200 origin-top-right">
+                            <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-50 animate-in zoom-in-95 duration-200 origin-top-right">
+                                <div className="p-3 border-b border-slate-50 mb-2 bg-slate-50/50 rounded-xl">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Date Range Filter</div>
+                                        {(startDate || endDate) && (
+                                            <button onClick={() => { setStartDate(''); setEndDate(''); }} className="text-[9px] font-bold text-red-500 hover:text-red-600 bg-red-50 px-2 py-0.5 rounded-md">CLEAR</button>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1">
+                                            <label className="text-[9px] font-bold text-slate-400 block mb-1">Start Date</label>
+                                            <input 
+                                                type="date" 
+                                                value={startDate} 
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                                className="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all shadow-sm"
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <label className="text-[9px] font-bold text-slate-400 block mb-1">End Date</label>
+                                            <input 
+                                                type="date" 
+                                                value={endDate} 
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                                className="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all shadow-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="text-[9px] text-slate-400 mt-2 italic">* Leave blank to export all records</div>
+                                </div>
                                 <div className="p-2">
                                     <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 mb-2">UG Records</div>
                                     <div className="grid grid-cols-2 gap-2">
