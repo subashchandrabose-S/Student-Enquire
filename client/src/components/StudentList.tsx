@@ -405,7 +405,7 @@ export const StudentList: React.FC = () => {
                         </button>
 
                         {showExportMenu && (
-                            <div className="absolute top-full right-0 mt-2 w-80 max-w-[90vw] bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-50 animate-in zoom-in-95 duration-200 origin-top-right">
+                            <div className="absolute top-full left-0 md:left-auto md:right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm md:w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-50 animate-in zoom-in-95 duration-200 origin-top-left md:origin-top-right">
                                 <div className="p-3 border-b border-slate-50 mb-2 bg-slate-50/50 rounded-xl">
                                     <div className="flex justify-between items-center mb-2">
                                         <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Date Range Filter</div>
