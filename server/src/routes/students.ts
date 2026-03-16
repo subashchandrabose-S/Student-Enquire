@@ -1,4 +1,4 @@
-﻿import { Router } from 'express';
+import { Router } from 'express';
 import { db } from '../config/firebase';
 
 const router = Router();
@@ -194,6 +194,9 @@ router.get('/:id/print', async (req, res) => {
         }
 
         addText('--------------------------------', 0, 1, 0);
+        if (s?.interested_course) {
+            addText(`COURSE: ${s.interested_course.toUpperCase()}`, 0, 0, 0);
+        }
         addText(`CONTACT: ${s?.contact_no}`, 0, 0, 0);
         addText(`DATE: ${new Date().toLocaleDateString()}`, 0, 0, 0);
 

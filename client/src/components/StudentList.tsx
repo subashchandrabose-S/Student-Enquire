@@ -104,7 +104,7 @@ export const StudentList: React.FC = () => {
         }
 
         const headers = [
-            'Name', 'Register Number', 'Contact', 'DOB',
+            'Name', 'Register Number', 'Interested Course', 'Contact', 'DOB',
             type === 'UG' ? 'Qualification' : 'Degree',
             type === 'UG' ? 'Board' : 'Status',
             type === 'UG' ? 'Cutoff/Percentage' : 'CGPA/Percentage',
@@ -117,6 +117,7 @@ export const StudentList: React.FC = () => {
                 const row = [
                     `"${s.name}"`,
                     `"${s.register_number}"`,
+                    `"${s.interested_course || ''}"`,
                     `"${s.contact_no}"`,
                     `"${s.dob || ''}"`,
                     type === 'UG' ? `"${s.qualification || ''}"` : `"${s.ug_degree || ''}"`,
@@ -151,10 +152,11 @@ export const StudentList: React.FC = () => {
         doc.setTextColor(100);
         doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
 
-        const tableColumn = ["Name", "Reg. No", "Contact", type === 'UG' ? "Qual." : "Degree", "Stats", "Token"];
+        const tableColumn = ["Name", "Reg. No", "Course", "Contact", type === 'UG' ? "Qual." : "Degree", "Stats", "Token"];
         const tableRows = data.map(s => [
             s.name || '',
             s.register_number || '',
+            s.interested_course || '',
             s.contact_no || '',
             type === 'UG' ? (s.qualification || '-') : (s.ug_degree || '-'),
             type === 'UG' ? (s.cutoff ? `Cutoff: ${s.cutoff.toFixed(2)}` : `${s.percentage || '-'}%`) : (s.cgpa ? `CGPA: ${s.cgpa}` : `${s.percentage || '-'}%`),
@@ -244,6 +246,14 @@ export const StudentList: React.FC = () => {
                                         <input
                                             value={editingStudent.register_number}
                                             onChange={e => setEditingStudent({ ...editingStudent, register_number: e.target.value })}
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none transition-all"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Interested Course</label>
+                                        <input
+                                            value={editingStudent.interested_course || ''}
+                                            onChange={e => setEditingStudent({ ...editingStudent, interested_course: e.target.value })}
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none transition-all"
                                         />
                                     </div>

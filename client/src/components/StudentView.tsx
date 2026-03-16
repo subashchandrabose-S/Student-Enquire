@@ -129,6 +129,17 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                                             </div>
                                         </div>
                                     )}
+                                    {student.interested_course && (
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                                <BookOpen size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Interested Course</p>
+                                                <p className="text-sm font-bold text-slate-700">{student.interested_course}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                                             <Phone size={20} />
@@ -314,6 +325,9 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                     </div>
 
                     <div className="pt-1 border-t border-slate-100">
+                        {student.interested_course && (
+                            <div className="uppercase">COURSE: {student.interested_course}</div>
+                        )}
                         <div>CONTACT: {student.contact_no}</div>
                         <div className="text-[10px] pt-1">DATE: {new Date().toLocaleDateString()}</div>
                     </div>

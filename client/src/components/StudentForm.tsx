@@ -10,6 +10,7 @@ const studentSchema = z.object({
     name: z.string().min(2, 'Name is required'),
     course_type: z.enum(['UG', 'PG']),
     register_number: z.string().min(1, 'Register Number is required'),
+    interested_course: z.string().min(1, 'Interested course is required'),
     contact_no: z.string().regex(/^\+?[\d\s-]{10,}$/, 'Invalid contact number'),
     // Age is calculated from DOB
     dob: z.string().min(1, 'Date of Birth is required'), // Made required
@@ -140,6 +141,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                 // age is now calculated on backend
                 course_type: data.course_type,
                 register_number: data.register_number,
+                interested_course: data.interested_course,
                 contact_no: data.contact_no,
                 dob: data.dob,
                 update_count: 1,
@@ -459,14 +461,25 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                             </div>
                         )}
 
-                        {/* 4. Contact Info (Always Visible) */}
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Number</label>
-                            <div className="relative">
-                                <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                <input {...register('contact_no')} className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="Enter contact number" />
+                        {/* 4. Interested Course & Contact Info (Always Visible) */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Interested Course</label>
+                                <div className="relative">
+                                    <BookOpen size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input {...register('interested_course')} className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="e.g. B.E. Artificial Intelligence" />
+                                </div>
+                                {errors.interested_course && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.interested_course.message}</p>}
                             </div>
-                            {errors.contact_no && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.contact_no.message}</p>}
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Number</label>
+                                <div className="relative">
+                                    <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input {...register('contact_no')} className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="Enter contact number" />
+                                </div>
+                                {errors.contact_no && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.contact_no.message}</p>}
+                            </div>
                         </div>
 
                         <button type="submit" disabled={isSubmitting} className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.2em] text-xs py-5 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-2xl shadow-slate-200 hover:shadow-blue-200 active:scale-[0.98]">

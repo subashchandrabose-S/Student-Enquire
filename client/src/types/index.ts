@@ -29,6 +29,7 @@ export interface Student {
     register_number: string; // Stores HSC, Diploma, or UG Register No based on selection
     percentage?: number; // For Other State, Diploma, PG Completed
     cgpa?: number; // Alternative for PG
+    interested_course?: string;
     contact_no: string;
     update_count?: number;
     visit_count?: number;
