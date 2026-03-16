@@ -153,8 +153,8 @@ export const StudentList: React.FC = () => {
     };
 
     const filteredStudents = students.filter(s =>
-        s.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.register_number?.toLowerCase().includes(searchTerm.toLowerCase())
+        (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+        (s.register_number?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
     );
 
     if (loading) return (
