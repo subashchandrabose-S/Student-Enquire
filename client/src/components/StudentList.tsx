@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { StudentView } from './StudentView';
 import type { Student } from '../types';
+import { UG_COURSES, PG_COURSES } from '../constants/courses';
 
 export const StudentList: React.FC = () => {
     const [students, setStudents] = useState<Student[]>([]);
@@ -251,11 +252,16 @@ export const StudentList: React.FC = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Interested Course</label>
-                                        <input
+                                        <select
                                             value={editingStudent.interested_course || ''}
                                             onChange={e => setEditingStudent({ ...editingStudent, interested_course: e.target.value })}
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none transition-all"
-                                        />
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none transition-all appearance-none"
+                                        >
+                                            <option value="">Select a course</option>
+                                            {(editingStudent.course_type === 'UG' ? UG_COURSES : PG_COURSES).map((course) => (
+                                                <option key={course} value={course}>{course}</option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Number</label>

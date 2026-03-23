@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { studentApi } from '../api/studentApi';
 import { Loader2, GraduationCap, CheckCircle2, AlertCircle, Calculator, User, Phone, ShieldCheck, BookOpen, Award } from 'lucide-react';
+import { UG_COURSES, PG_COURSES } from '../constants/courses';
 
 // Zod Schema based on complex requirements
 const studentSchema = z.object({
@@ -467,7 +468,20 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Interested Course</label>
                                 <div className="relative">
                                     <BookOpen size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input {...register('interested_course')} className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500" placeholder="e.g. B.E. Artificial Intelligence" />
+                                    <select 
+                                        {...register('interested_course')} 
+                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-4 py-3 font-bold text-slate-700 outline-none focus:border-blue-500 appearance-none"
+                                    >
+                                        <option value="">Select a course</option>
+                                        {(courseType === 'UG' ? UG_COURSES : PG_COURSES).map((course) => (
+                                            <option key={course} value={course}>{course}</option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
                                 </div>
                                 {errors.interested_course && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.interested_course.message}</p>}
                             </div>
