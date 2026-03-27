@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { studentApi } from '../api/studentApi';
-import { Search, Trash2, GraduationCap, Phone, Printer, Database, X, Edit2, Check, Loader2, Eye, Download, FileText, FileSpreadsheet } from 'lucide-react';
+import { Search, Trash2, GraduationCap, Phone, Printer, Database, X, Edit2, Check, Loader2, Eye, Download, FileText, FileSpreadsheet, Calendar } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { StudentView } from './StudentView';
@@ -17,6 +17,7 @@ export const StudentList: React.FC = () => {
     const [showExportMenu, setShowExportMenu] = useState(false);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
 
     useEffect(() => {
         loadStudents();
@@ -178,10 +179,16 @@ export const StudentList: React.FC = () => {
         setShowExportMenu(false);
     };
 
-    const filteredStudents = students.filter(s =>
-        (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-        (s.register_number?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
-    );
+    const filteredStudents = students.filter(s => {
+        const studentDateStr = s.token_date || (s.created_at ? s.created_at.split('T')[0] : null);
+        const dateMatch = !filterDate || studentDateStr === filterDate;
+        
+        const searchMatch = !searchTerm || 
+            (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+            (s.register_number?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
+            
+        return dateMatch && searchMatch;
+    });
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 gap-6 animate-fade-in h-screen">
@@ -481,14 +488,25 @@ export const StudentList: React.FC = () => {
                             </div>
                         )}
                     </div>
-                    <div className="relative w-full md:w-80">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search records..."
-                            className="bg-white border border-slate-200 text-slate-700 pl-12 pr-6 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
-                        />
+                    <div className="flex flex-col md:flex-row gap-3 w-full lg:w-auto">
+                        <div className="relative w-full md:w-48">
+                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <input
+                                type="date"
+                                value={filterDate}
+                                onChange={(e) => setFilterDate(e.target.value)}
+                                className="bg-white border border-slate-200 text-slate-700 pl-12 pr-4 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
+                            />
+                        </div>
+                        <div className="relative w-full md:w-80">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <input
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="Search records..."
+                                className="bg-white border border-slate-200 text-slate-700 pl-12 pr-6 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
