@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import studentRoutes from './routes/students';
@@ -44,16 +44,19 @@ app.use((req, res, next) => {
 });
 
 // Health check & Debug
-app.get('/', (req, res) => {
+const healthCheck = (req: any, res: any) => {
   const firebaseConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT;
   res.json({
     status: 'online',
     message: 'Student Enquiry Portal API is running',
-    firebase_configured: firebaseConfigured, // Fixed boolean value
+    firebase_configured: firebaseConfigured,
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV
   });
-});
+};
+app.get('/', healthCheck);
+app.get('/api/health', healthCheck);
+app.get('/health', healthCheck);
 
 // Routes
 // Mount on both paths to handle Vercel's inconsistent rewriting behavior

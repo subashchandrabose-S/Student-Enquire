@@ -223,8 +223,8 @@ export const StudentList: React.FC = () => {
         <div className="w-full max-w-7xl mx-auto p-2 md:p-8 animate-fade-in print:p-0">
             {/* Comprehensive Edit Modal */}
             {editingStudent && (
-                <div className="fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-2 md:p-4 overflow-y-auto">
-                    <div className="bg-white rounded-3xl md:rounded-[2.5rem] shadow-2xl w-full max-w-2xl my-2 md:my-8 overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-sm flex items-start justify-center p-2 md:p-4 overflow-y-auto">
+                    <div className="bg-white rounded-3xl md:rounded-[2.5rem] shadow-2xl w-full max-w-2xl mt-2 md:mt-4 mb-2 md:mb-8 overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="bg-slate-900 p-6 md:p-8 text-white flex justify-between items-center">
                             <div>
                                 <h3 className="font-black uppercase tracking-widest text-sm">Edit Enrollment</h3>

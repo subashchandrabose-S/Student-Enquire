@@ -65,7 +65,8 @@ export const studentApi = {
     },
     checkConnection: async () => {
         try {
-            await axios.get(`${API_BASE_URL}/students`);
+            // Ping the health endpoint instead of fetching all students to save Firebase quota
+            await axios.get(`${API_BASE_URL.replace(/\/$/, '')}/health`);
             return { connected: true, url: API_BASE_URL };
         } catch (error: any) {
             return { connected: false, url: API_BASE_URL, error: error.message };

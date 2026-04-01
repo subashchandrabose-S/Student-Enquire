@@ -140,7 +140,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ compact }) => {
 
     useEffect(() => {
         check();
-        const interval = setInterval(check, 30000);
+        const interval = setInterval(check, 60000); // Check every 60 seconds
         return () => clearInterval(interval);
     }, []);
 
