@@ -129,6 +129,28 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                                             </div>
                                         </div>
                                     )}
+                                    {student.community && (
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                                <User size={20} className="text-indigo-400 opacity-60" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Community</p>
+                                                <p className="text-sm font-bold text-slate-700">{student.community}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {student.created_at && (
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                                <Calendar size={20} className="text-emerald-400 opacity-60" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Register Date</p>
+                                                <p className="text-sm font-bold text-slate-700">{new Date(student.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                     {student.interested_course && (
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
@@ -299,12 +321,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                         <div>NAME: {student.name.toUpperCase()}</div>
                         <div className="flex justify-between items-baseline">
                             <span>AGE: {student.age}</span>
-                            <span className="text-[10px] font-black">
-                                {student.course_type === 'PG'
-                                    ? `B.E ${student.ug_degree ? `/ ${student.ug_degree.split(' ').pop()?.toUpperCase()}` : ''}`
-                                    : ''
-                                }
-                            </span>
+                            <span>COMM: {student.community || '-'}</span>
                         </div>
                     </div>
 
@@ -329,7 +346,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                             <div className="uppercase">COURSE: {student.interested_course}</div>
                         )}
                         <div>CONTACT: {student.contact_no}</div>
-                        <div className="text-[10px] pt-1">DATE: {new Date().toLocaleDateString()}</div>
+                        <div className="text-[10px] pt-1">DATE: {student.created_at ? new Date(student.created_at).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN')}</div>
                     </div>
 
                     <div className="text-center font-bold pt-2 border-t border-dashed border-black mt-2 space-y-1">

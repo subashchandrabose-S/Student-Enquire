@@ -15,6 +15,7 @@ const studentSchema = z.object({
     contact_no: z.string().regex(/^\+?[\d\s-]{10,}$/, 'Invalid contact number'),
     // Age is calculated from DOB
     dob: z.string().min(1, 'Date of Birth is required'), // Made required
+    community: z.enum(['MBC', 'BC', 'SC/ST', 'OBC', 'Other']),
 
     // UG - HSC/Diploma
     qualification: z.enum(['HSC', 'Diploma']).nullable().optional().or(z.literal('')),
@@ -145,6 +146,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                 interested_course: data.interested_course,
                 contact_no: data.contact_no,
                 dob: data.dob,
+                community: data.community,
                 update_count: 1,
             };
 
@@ -270,7 +272,19 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                                     {errors.dob && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.dob.message}</p>}
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Program Selection</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Community</label>
+                                    <select {...register('community')} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none">
+                                        <option value="">Select Community</option>
+                                        <option value="MBC">MBC</option>
+                                        <option value="BC">BC</option>
+                                        <option value="SC/ST">SC/ST</option>
+                                        <option value="OBC">OBC</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    {errors.community && <p className="text-red-500 text-[10px] font-bold ml-1">{errors.community.message}</p>}
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 Program Selection">Program Selection</label>
                                     <div className="flex gap-4">
                                         {['UG', 'PG'].map((type) => (
                                             <label key={type} className={`flex-1 cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${courseType === type ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-100 text-slate-400'}`}>

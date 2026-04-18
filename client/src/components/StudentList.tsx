@@ -106,11 +106,11 @@ export const StudentList: React.FC = () => {
         }
 
         const headers = [
-            'Name', 'Register Number', 'Interested Course', 'Contact', 'DOB',
+            'Name', 'Register Number', 'Community', 'Interested Course', 'Contact', 'DOB',
             type === 'UG' ? 'Qualification' : 'Degree',
             type === 'UG' ? 'Board' : 'Status',
             type === 'UG' ? 'Cutoff/Percentage' : 'CGPA/Percentage',
-            'Token'
+            'Token', 'Register Date'
         ];
 
         const csvContent = [
@@ -119,13 +119,15 @@ export const StudentList: React.FC = () => {
                 const row = [
                     `"${s.name}"`,
                     `"${s.register_number}"`,
+                    `"${s.community || ''}"`,
                     `"${s.interested_course || ''}"`,
                     `"${s.contact_no}"`,
                     `"${s.dob || ''}"`,
                     type === 'UG' ? `"${s.qualification || ''}"` : `"${s.ug_degree || ''}"`,
                     type === 'UG' ? `"${s.board || ''}"` : `"${s.ug_status || ''}"`,
                     type === 'UG' ? `"${s.cutoff || s.percentage || ''}"` : `"${s.cgpa || s.percentage || ''}"`,
-                    `"${s.token_number || ''}"`
+                    `"${s.token_number || ''}"`,
+                    `"${s.created_at ? new Date(s.created_at).toLocaleDateString() : ''}"`
                 ];
                 return row.join(',');
             })
@@ -154,15 +156,17 @@ export const StudentList: React.FC = () => {
         doc.setTextColor(100);
         doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
 
-        const tableColumn = ["Name", "Reg. No", "Course", "Contact", type === 'UG' ? "Qual." : "Degree", "Stats", "Token"];
+        const tableColumn = ["Name", "Reg. No", "Community", "Course", "Contact", type === 'UG' ? "Qual." : "Degree", "Stats", "Token", "Reg. Date"];
         const tableRows = data.map(s => [
             s.name || '',
             s.register_number || '',
+            s.community || '-',
             s.interested_course || '',
             s.contact_no || '',
             type === 'UG' ? (s.qualification || '-') : (s.ug_degree || '-'),
             type === 'UG' ? (s.cutoff ? `Cutoff: ${s.cutoff.toFixed(2)}` : `${s.percentage || '-'}%`) : (s.cgpa ? `CGPA: ${s.cgpa}` : `${s.percentage || '-'}%`),
-            s.token_number || '-'
+            s.token_number || '-',
+            s.created_at ? new Date(s.created_at).toLocaleDateString() : '-'
         ]);
 
         autoTable(doc, {
@@ -286,6 +290,21 @@ export const StudentList: React.FC = () => {
                                             onChange={e => setEditingStudent({ ...editingStudent, dob: e.target.value })}
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none transition-all"
                                         />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Community</label>
+                                        <select
+                                            value={editingStudent.community || ''}
+                                            onChange={e => setEditingStudent({ ...editingStudent, community: e.target.value as any })}
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-700 focus:border-blue-500 outline-none transition-all"
+                                        >
+                                            <option value="">Select Community</option>
+                                            <option value="MBC">MBC</option>
+                                            <option value="BC">BC</option>
+                                            <option value="SC/ST">SC/ST</option>
+                                            <option value="OBC">OBC</option>
+                                            <option value="Other">Other</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

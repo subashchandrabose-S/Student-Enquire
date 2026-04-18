@@ -34,6 +34,7 @@ export interface Student {
     update_count?: number;
     visit_count?: number;
 
+    community?: 'MBC' | 'BC' | 'SC/ST' | 'OBC' | 'Other';
     created_at?: string;
     token_number?: number;
     token_date?: string;
