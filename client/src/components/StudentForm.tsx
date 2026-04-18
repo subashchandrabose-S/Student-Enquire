@@ -80,10 +80,11 @@ const studentSchema = z.object({
 type FormValues = z.infer<typeof studentSchema>;
 
 interface StudentFormProps {
-    onGoToList: () => void;
+    onGoToList?: () => void;
+    showListButton?: boolean;
 }
 
-export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
+export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList, showListButton = true }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
@@ -211,12 +212,14 @@ export const StudentForm: React.FC<StudentFormProps> = ({ onGoToList }) => {
                             <p className="text-slate-400 text-sm mt-2 font-medium">The student record has been securely saved to the SONA database.</p>
                         </div>
                         <div className="p-10 space-y-4">
-                            <button
-                                onClick={() => { setShowModal(false); onGoToList(); }}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-blue-200"
-                            >
-                                View Student List
-                            </button>
+                            {showListButton && onGoToList && (
+                                <button
+                                    onClick={() => { setShowModal(false); onGoToList(); }}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-blue-200"
+                                >
+                                    View Student List
+                                </button>
+                            )}
                             <button
                                 onClick={() => { setShowModal(false); }}
                                 className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-4 rounded-2xl transition-all duration-300"

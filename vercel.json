@@ -6,6 +6,10 @@
       "destination": "/server/src/index.ts"
     },
     {
+      "source": "/register",
+      "destination": "/client/index.html"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/client/$1"
     }
