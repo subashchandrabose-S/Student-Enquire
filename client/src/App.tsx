@@ -3,6 +3,7 @@ import { StudentForm } from './components/StudentForm';
 import { StudentList } from './components/StudentList';
 import { Sidebar } from './components/Sidebar';
 import { Login } from './components/Login';
+import { Footer } from './components/Footer';
 
 type ActiveTab = 'form' | 'list';
 
@@ -41,8 +42,11 @@ function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <Login onLogin={handleLogin} />
+      <div className="min-h-screen bg-gray-100 flex flex-col">
+        <div className="flex-1 flex items-center justify-center">
+          <Login onLogin={handleLogin} />
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -59,15 +63,18 @@ function App() {
         />
       </div>
 
-      <main className="flex-1 ml-0 md:ml-64 p-4 md:p-12 overflow-y-auto min-h-screen flex items-start justify-center print:ml-0 print:p-0 print:h-auto print:block pb-24 md:pb-12">
-        {activeTab === 'form' ? (
-          <div className="w-full max-w-6xl print:hidden animate-fade-in">
-            <StudentForm onGoToList={() => setActiveTab('list')} />
-          </div>
-        ) : (
-          <StudentList />
-        )}
-      </main>
+      <div className="flex-1 ml-0 md:ml-64 flex flex-col min-h-screen print:ml-0">
+        <main className="flex-1 p-4 md:p-12 overflow-y-auto flex items-start justify-center print:p-0 print:h-auto print:block pb-24 md:pb-12">
+          {activeTab === 'form' ? (
+            <div className="w-full max-w-6xl print:hidden animate-fade-in">
+              <StudentForm onGoToList={() => setActiveTab('list')} />
+            </div>
+          ) : (
+            <StudentList />
+          )}
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
