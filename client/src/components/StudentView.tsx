@@ -1,14 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Student } from '../types';
-import { API_BASE_URL } from '../api/studentApi';
-import { User, Phone, Calendar, BookOpen, LogOut, GraduationCap, Calculator, Eye, Smartphone } from 'lucide-react';
+import { API_BASE_URL, studentApi } from '../api/studentApi';
+import { User, Phone, Calendar, BookOpen, LogOut, GraduationCap, Calculator, Eye, Smartphone, CalendarPlus, Check, Loader2 } from 'lucide-react';
 
 interface StudentViewProps {
     student: Student;
     onLogout?: () => void;
 }
 
-export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) => {
+export const StudentView: React.FC<StudentViewProps> = ({ student: initialStudent, onLogout }) => {
+    const [student, setStudent] = useState<Student>(initialStudent);
+    const [isRegisteringVisit, setIsRegisteringVisit] = useState(false);
+
+    useEffect(() => {
+        setStudent(initialStudent);
+    }, [initialStudent]);
+
+    const handleRegisterVisit = async () => {
+        if (!student.id) return;
+        setIsRegisteringVisit(true);
+        try {
+            const res = await studentApi.registerVisit(student.id);
+            if (res.success) {
+                setStudent(res.data);
+            }
+        } catch (error) {
+            console.error('Failed to register visit:', error);
+            alert('Failed to register visit');
+        } finally {
+            setIsRegisteringVisit(false);
+        }
+    };
+
     // Debug: Log visit count
     console.log('StudentView - visit_count:', student.visit_count, 'Full student:', student);
 
@@ -173,20 +196,51 @@ export const StudentView: React.FC<StudentViewProps> = ({ student, onLogout }) =
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
-                                            <Eye size={20} />
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Visit Count</p>
-                                            <p className="text-sm font-bold text-slate-700">{student.visit_count || 0}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                                             <Calculator size={20} />
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Update Count</p>
                                             <p className="text-sm font-bold text-slate-700">{student.update_count || 1}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Consolidated Registration & Visit History */}
+                                    <div className="pt-4 border-t border-slate-100 space-y-4">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                            <div className="flex items-center gap-2">
+                                                <Calendar size={16} className="text-indigo-500" />
+                                                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">
+                                                    Visit Dates & History ({student.visit_count || 0})
+                                                </p>
+                                            </div>
+                                            <button
+                                                onClick={handleRegisterVisit}
+                                                disabled={isRegisteringVisit}
+                                                className="self-start sm:self-auto text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 disabled:opacity-50 px-3 py-1.5 rounded-lg border border-blue-100 transition-all flex items-center gap-1.5 cursor-pointer"
+                                                title="Register a new visit today"
+                                            >
+                                                {isRegisteringVisit ? (
+                                                    <Loader2 size={12} className="animate-spin" />
+                                                ) : (
+                                                    <CalendarPlus size={12} />
+                                                )}
+                                                <span>Register Visit Today</span>
+                                            </button>
+                                        </div>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {/* Initial Registration Date badge */}
+                                            {student.created_at && (
+                                                <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg border border-emerald-100 flex items-center gap-1 shadow-sm">
+                                                    <Check size={10} className="text-emerald-500" />
+                                                    {new Date(student.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })} (Reg)
+                                                </span>
+                                            )}
+                                            {/* Visited dates list */}
+                                            {student.visited_dates && student.visited_dates.split('/').map((date, idx) => (
+                                                <span key={idx} className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-lg border border-indigo-100 shadow-sm transition-all duration-300 hover:scale-105">
+                                                    {date}
+                                                </span>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>

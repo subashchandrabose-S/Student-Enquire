@@ -125,13 +125,78 @@ router.get('/:id', async (req, res) => {
         }
 
         const currentData = doc.data();
-        const newVisitCount = (currentData?.visit_count || 0) + 1;
 
-        // Update visit count in background
-        await studentRef.update({ visit_count: newVisitCount });
+        // Auto-generate today's date in DD,MM,YY format
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        const todayFormatted = `${dd},${mm},${yy}`;
 
-        res.json({ success: true, data: { id: doc.id, ...currentData, visit_count: newVisitCount } });
+        // Append to visited_dates (avoid duplicate same-day entries)
+        let existingDates = currentData?.visited_dates || '';
+        const datesArray = existingDates ? existingDates.split('/') : [];
+        let updatedVisitedDates = existingDates;
+        let newVisitCount = currentData?.visit_count || 0;
+
+        if (!datesArray.includes(todayFormatted)) {
+            datesArray.push(todayFormatted);
+            updatedVisitedDates = datesArray.join('/');
+            newVisitCount = newVisitCount + 1;
+
+            // Save immediately to Firestore
+            await studentRef.update({
+                visit_count: newVisitCount,
+                visited_dates: updatedVisitedDates
+            });
+        }
+
+        res.json({ success: true, data: { id: doc.id, ...currentData, visit_count: newVisitCount, visited_dates: updatedVisitedDates } });
     } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+// POST /api/students/:id/visit - Explicitly add today's date to visited_dates and increment visit_count
+router.post('/:id/visit', async (req, res) => {
+    try {
+        const studentRef = db.collection(STUDENTS_COLLECTION).doc(req.params.id);
+        const doc = await studentRef.get();
+
+        if (!doc.exists) {
+            return res.status(404).json({ success: false, error: 'Student not found' });
+        }
+
+        const currentData = doc.data();
+
+        // Auto-generate today's date in DD,MM,YY format
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        const todayFormatted = `${dd},${mm},${yy}`;
+
+        // Append to visited_dates (avoid duplicate same-day entries)
+        let existingDates = currentData?.visited_dates || '';
+        const datesArray = existingDates ? existingDates.split('/') : [];
+        let newVisitCount = currentData?.visit_count || 0;
+
+        if (!datesArray.includes(todayFormatted)) {
+            datesArray.push(todayFormatted);
+            newVisitCount = newVisitCount + 1;
+        }
+        const updatedVisitedDates = datesArray.join('/');
+
+        const updateData = {
+            visit_count: newVisitCount,
+            visited_dates: updatedVisitedDates,
+            updated_at: new Date().toISOString()
+        };
+
+        await studentRef.update(updateData);
+        res.json({ success: true, data: { id: req.params.id, ...currentData, ...updateData } });
+    } catch (error: any) {
+        console.error('Error registering visit:', error);
         res.status(400).json({ success: false, error: error.message });
     }
 });
@@ -245,10 +310,31 @@ router.put('/:id', async (req, res) => {
         }
 
         const currentData = doc.data();
+
+        // Auto-generate today's date in DD,MM,YY format
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        const todayFormatted = `${dd},${mm},${yy}`;
+
+        // Append to visited_dates (avoid duplicate same-day entries)
+        let existingDates = currentData?.visited_dates || '';
+        const datesArray = existingDates ? existingDates.split('/') : [];
+        let newVisitCount = currentData?.visit_count || 0;
+
+        if (!datesArray.includes(todayFormatted)) {
+            datesArray.push(todayFormatted);
+            newVisitCount = newVisitCount + 1;
+        }
+        const updatedVisitedDates = datesArray.join('/');
+
         const updateData = {
             ...req.body,
+            visit_count: newVisitCount,
             update_count: (currentData?.update_count || 1) + 1,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
+            visited_dates: updatedVisitedDates
         };
 
         await studentRef.update(updateData);

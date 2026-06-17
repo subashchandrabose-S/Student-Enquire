@@ -63,6 +63,10 @@ export const studentApi = {
         const response = await axios.put(`${API_BASE_URL}/students/${id}`, data);
         return response.data;
     },
+    registerVisit: async (id: string) => {
+        const response = await axios.post(`${API_BASE_URL}/students/${id}/visit`);
+        return response.data;
+    },
     checkConnection: async () => {
         try {
             // Ping the health endpoint instead of fetching all students to save Firebase quota

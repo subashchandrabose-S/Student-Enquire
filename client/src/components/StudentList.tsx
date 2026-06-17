@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { studentApi } from '../api/studentApi';
-import { Search, Trash2, GraduationCap, Phone, Printer, Database, X, Edit2, Check, Loader2, Eye, Download, FileText, FileSpreadsheet, Calendar } from 'lucide-react';
+import { Search, Trash2, GraduationCap, Phone, Printer, Database, X, Edit2, Check, Loader2, Eye, Download, FileText, FileSpreadsheet, Calendar, CalendarPlus } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { StudentView } from './StudentView';
@@ -74,6 +74,23 @@ export const StudentList: React.FC = () => {
         } catch (error) {
             console.error('Failed to fetch student details', error);
             setSelectedStudent(student);
+        }
+    };
+
+    const [registeringVisitId, setRegisteringVisitId] = useState<string | null>(null);
+
+    const handleRegisterVisit = async (id: string) => {
+        setRegisteringVisitId(id);
+        try {
+            const result = await studentApi.registerVisit(id);
+            if (result.success) {
+                loadStudents();
+            }
+        } catch (error) {
+            console.error('Failed to register visit:', error);
+            alert('Failed to register visit');
+        } finally {
+            setRegisteringVisitId(null);
         }
     };
 
@@ -184,12 +201,17 @@ export const StudentList: React.FC = () => {
     };
 
     const filteredStudents = students.filter(s => {
+        const lowerSearch = searchTerm.toLowerCase();
+
+        // When searching, ignore date filter so results come from all dates
         const studentDateStr = s.token_date || (s.created_at ? s.created_at.split('T')[0] : null);
-        const dateMatch = !filterDate || studentDateStr === filterDate;
+        const dateMatch = searchTerm ? true : (!filterDate || studentDateStr === filterDate);
         
         const searchMatch = !searchTerm || 
-            (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-            (s.register_number?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
+            (s.name?.toLowerCase().includes(lowerSearch) || false) ||
+            (s.register_number?.toLowerCase().includes(lowerSearch) || false) ||
+            (s.contact_no?.toLowerCase().includes(lowerSearch) || false) ||
+            (s.interested_course?.toLowerCase().includes(lowerSearch) || false);
             
         return dateMatch && searchMatch;
     });
@@ -229,12 +251,32 @@ export const StudentList: React.FC = () => {
             {editingStudent && (
                 <div className="fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-sm flex items-start justify-center p-2 md:p-4 overflow-y-auto">
                     <div className="bg-white rounded-3xl md:rounded-[2.5rem] shadow-2xl w-full max-w-2xl mt-2 md:mt-4 mb-2 md:mb-8 overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="bg-slate-900 p-6 md:p-8 text-white flex justify-between items-center">
-                            <div>
-                                <h3 className="font-black uppercase tracking-widest text-sm">Edit Enrollment</h3>
-                                <p className="text-slate-400 text-[10px] font-bold mt-1 uppercase tracking-widest">ID: {editingStudent.id}</p>
+                        <div className="bg-slate-900 p-6 md:p-8 text-white">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h3 className="font-black uppercase tracking-widest text-sm">Edit Enrollment</h3>
+                                    <p className="text-slate-400 text-[10px] font-bold mt-1 uppercase tracking-widest">ID: {editingStudent.id}</p>
+                                </div>
+                                <button onClick={() => setEditingStudent(null)} className="bg-white/10 hover:bg-red-500/20 p-2 rounded-full transition-colors"><X size={20} /></button>
                             </div>
-                            <button onClick={() => setEditingStudent(null)} className="bg-white/10 hover:bg-red-500/20 p-2 rounded-full transition-colors"><X size={20} /></button>
+                            {editingStudent.visited_dates && (
+                                <div className="mt-4 pt-4 border-t border-white/10">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Calendar size={14} className="text-blue-400" />
+                                        <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Visit History</span>
+                                        <span className="text-[9px] font-bold text-slate-500 bg-white/10 px-2 py-0.5 rounded-full">
+                                            {editingStudent.visited_dates.split('/').length} visit{editingStudent.visited_dates.split('/').length > 1 ? 's' : ''}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {editingStudent.visited_dates.split('/').map((date, idx) => (
+                                            <span key={idx} className="text-[10px] font-bold bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-lg border border-blue-400/20">
+                                                {date}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <form onSubmit={handleUpdate} className="p-4 md:p-8 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
@@ -513,18 +555,39 @@ export const StudentList: React.FC = () => {
                             <input
                                 type="date"
                                 value={filterDate}
-                                onChange={(e) => setFilterDate(e.target.value)}
-                                className="bg-white border border-slate-200 text-slate-700 pl-12 pr-4 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
+                                onChange={(e) => { setFilterDate(e.target.value); setSearchTerm(''); }}
+                                className="bg-white border border-slate-200 text-slate-700 pl-12 pr-10 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
                             />
+                            {filterDate && (
+                                <button
+                                    onClick={() => setFilterDate('')}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50"
+                                    title="Clear date filter to show all"
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
                         </div>
                         <div className="relative w-full md:w-80">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                             <input
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Search records..."
-                                className="bg-white border border-slate-200 text-slate-700 pl-12 pr-6 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
+                                onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    if (e.target.value) setFilterDate('');
+                                }}
+                                placeholder="Search by name, register no, phone..."
+                                className="bg-white border border-slate-200 text-slate-700 pl-12 pr-10 py-4 rounded-2xl md:rounded-[1.5rem] outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all w-full font-bold text-sm shadow-sm"
                             />
+                            {searchTerm && (
+                                <button
+                                    onClick={() => { setSearchTerm(''); setFilterDate(new Date().toISOString().split('T')[0]); }}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50"
+                                    title="Clear search"
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -557,24 +620,45 @@ export const StudentList: React.FC = () => {
                                 <div className="text-[10px] font-bold text-slate-400 truncate max-w-[150px]">
                                     {s.qualification || s.ug_degree || 'General'}
                                 </div>
+                                {s.visited_dates && (
+                                    <div className="flex flex-wrap gap-1 mt-1">
+                                        {s.visited_dates.split('/').map((date, idx) => (
+                                            <span key={idx} className="text-[8px] font-bold bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded border border-indigo-100">
+                                                {date}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex gap-2">
                                 <button
+                                    onClick={() => s.id && handleRegisterVisit(s.id)}
+                                    disabled={registeringVisitId === s.id}
+                                    className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 disabled:opacity-50 flex items-center justify-center transition-all hover:bg-indigo-600 hover:text-white active:scale-95"
+                                    title="Mark Visited Today"
+                                >
+                                    {registeringVisitId === s.id ? (
+                                        <Loader2 size={18} className="animate-spin" />
+                                    ) : (
+                                        <CalendarPlus size={18} />
+                                    )}
+                                </button>
+                                <button
                                     onClick={() => handleViewStudent(s)}
-                                    className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"
+                                    className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center active:scale-95"
                                 >
                                     <Eye size={18} />
                                 </button>
                                 <button
                                     onClick={() => setEditingStudent(s)}
-                                    className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"
+                                    className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center active:scale-95"
                                 >
                                     <Edit2 size={18} />
                                 </button>
                                 <button
                                     onClick={() => s.id && handleDelete(s.id)}
-                                    className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center"
+                                    className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center active:scale-95"
                                 >
                                     <Trash2 size={18} />
                                 </button>
@@ -642,27 +726,51 @@ export const StudentList: React.FC = () => {
                                                     {new Date(s.created_at).toLocaleString('en-US', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
                                                 </div>
                                             )}
+                                            {s.visited_dates && (
+                                                <div className="mt-1.5 pt-1.5 border-t border-slate-50">
+                                                    <div className="text-[9px] font-black text-indigo-500 uppercase tracking-widest mb-1">Visited</div>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {s.visited_dates.split('/').map((date, idx) => (
+                                                            <span key={idx} className="text-[9px] font-bold bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded border border-indigo-100">
+                                                                {date}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="p-8 print:hidden">
                                         <div className="flex justify-end gap-3 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 md:translate-x-4 md:group-hover:translate-x-0">
                                             <button
+                                                onClick={() => s.id && handleRegisterVisit(s.id)}
+                                                disabled={registeringVisitId === s.id}
+                                                className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white disabled:opacity-50 transition-all flex items-center justify-center shadow-lg shadow-indigo-500/10 active:scale-95"
+                                                title="Mark Visited Today"
+                                            >
+                                                {registeringVisitId === s.id ? (
+                                                    <Loader2 size={18} className="animate-spin" />
+                                                ) : (
+                                                    <CalendarPlus size={18} />
+                                                )}
+                                            </button>
+                                            <button
                                                 onClick={() => handleViewStudent(s)}
-                                                className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center shadow-lg shadow-blue-500/10"
+                                                className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center shadow-lg shadow-blue-500/10 active:scale-95"
                                                 title="View & Print"
                                             >
                                                 <Printer size={18} />
                                             </button>
                                             <button
                                                 onClick={() => setEditingStudent(s)}
-                                                className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center shadow-lg shadow-emerald-500/10"
+                                                className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center shadow-lg shadow-emerald-500/10 active:scale-95"
                                                 title="Edit"
                                             >
                                                 <Edit2 size={18} />
                                             </button>
                                             <button
                                                 onClick={() => s.id && handleDelete(s.id)}
-                                                className="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center shadow-lg shadow-red-500/10"
+                                                className="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center shadow-lg shadow-red-500/10 active:scale-95"
                                                 title="Delete"
                                             >
                                                 <Trash2 size={18} />

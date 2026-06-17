@@ -38,6 +38,7 @@ export interface Student {
     created_at?: string;
     token_number?: number;
     token_date?: string;
+    visited_dates?: string; // Auto-tracked: "DD,MM,YY/DD,MM,YY/..." format
 }
 
 export interface StudentSubmission {
